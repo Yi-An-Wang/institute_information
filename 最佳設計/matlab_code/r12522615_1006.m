@@ -1,0 +1,70 @@
+% polynomial fitting and prediction demo for 1d problem
+% NTU, ME, SOLab
+% 2022/09/27
+
+clc; clear; close all;
+%% Step 0: Load data file
+% x: 200 points between 0 and 2
+% y: 200 points
+load('OneDimensional_data.mat');
+
+%% Step 1: Plot the original data
+figure(1);
+% ----- to do -----
+plot(x,y,'r.');
+hold on
+%% Step 2: Modeling through the all data.
+% Fit a polynomial of degree 5.
+% ----- to do -----
+x1 = linspace(0,2,200);
+p=polyfit(x,y,5);
+% Evaluate the polynomial at the data points
+% Hint: polyval
+% ----- to do -----
+y1 = polyval(p,x1);
+% Plot the polynomial fit in the interval [0,2].
+% ----- to do -----
+plot(x1,y1,'g')
+%% Step 3: Estimate error (known model)
+figure(2);
+y_origin = (1.7*x1.^5-6.2*x1.^4+6.3*x1.^3-2.3*x1+1.1);
+
+% Estimate error 
+% ----- to do -----
+error=abs(y1-y_origin);
+error_p=error./y1*100;
+% Plot error with respect to x  
+% ----- to do -----
+plot(x1,error_p);
+%% Step 4: Estimate error (unknown model, leave one out)
+% Leave one out: Take out the 1 sample, and model through the remaining n-1 data.
+% Generate 200 models.
+err=zeros(200,1);
+for i = 1:size(y,1) 
+    % Take out the ith sample.
+    % ----- to do -----
+    if i==1
+        x2=x(2:200);
+        y2=y(2:200);
+    elseif i==200
+        x2=x(1:199);
+        y2=y(1:199);
+    else
+        x2=[x(1:i-1);x(i+1:200)];
+        y2=[y(1:i-1);y(i+1:200)];
+    end
+
+    
+    % Modeling through the remaining 199 data. (similar Step 2)
+    % ----- to do -----
+    x3 = linspace(0,2,200);
+    p=polyfit(x2,y2,5);
+    y3 = polyval(p,x3);
+    % Estimate error between model prediction and provided data 
+    % ----- to do -----
+    err(i)=abs(y(i)-y3(i))/y(i)*100;
+end
+% Polt error with respect to each model 
+ % ----- to do -----
+ figure(3)
+ histogram(err,10)
