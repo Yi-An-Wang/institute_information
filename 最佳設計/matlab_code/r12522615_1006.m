@@ -67,4 +67,6 @@ end
 % Polt error with respect to each model 
  % ----- to do -----
  figure(3)
+ plot(x,err,'.')
+ figure(4)
  histogram(err,10)
