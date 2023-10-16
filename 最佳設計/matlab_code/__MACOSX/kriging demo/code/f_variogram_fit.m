@@ -1,4 +1,4 @@
-function kparam = f_variogram_fit(x, y, lb, ub, fittype, SCFtype)
+function kparam = 0
 
 % function kparam = f_variogram_fit(x, y, lb, ub, fittype, SCFtype)
 % 
