@@ -1,6 +1,6 @@
-%function kparam = 0
-
 function kparam = f_variogram_fit(x, y, lb, ub, fittype, SCFtype)
+
+% function kparam = f_variogram_fit(x, y, lb, ub, fittype, SCFtype)
 % 
 % This function file takes in a data set and creates the kriging metamodels
 % for each response.  The resulting information is stored in a structure
