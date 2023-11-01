@@ -21,5 +21,5 @@ end
 x_1=linspace(-5,5);
 x_2=linspace(-5,5);
 [X1,X2]=meshgrid(x_1,x_2);
-y=4.*X1^2+3.*X1.*X2+X2.^2;
+y=4.*X1.^2+3.*X1.*X2+X2.^2;
 surf(X1,X2,y)
