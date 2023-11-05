@@ -11,4 +11,5 @@ title("best-fit parabola")
 xlabel("t")
 ylabel("y")
 grid on
+legend('y(t)=25/181+61/181*t+57.5/181*t^2','measurments')
 hold off

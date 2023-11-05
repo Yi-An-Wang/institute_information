@@ -4,8 +4,8 @@ iteration_x=zeros(2,max_step);
 iteration_f=zeros(1,max_step);
 iteration_apha=zeros(2,max_step);
 iteration_x(:,1)=x0;
-a1=linspace(0,1,600);
-a2=linspace(0,1,600);
+a1=linspace(0,1,1000);
+a2=linspace(0,1,1000);
 n=size(a1,2);
 try_apha=cell(n,n);
 for aa=1:n
@@ -15,7 +15,7 @@ for aa=1:n
 end
 for ii=1:max_step
     [iteration_f(ii),df,H]=objective_function_hw2_2(iteration_x(:,ii));
-    if ii>1 && abs(iteration_f(ii)-iteration_f(ii-1))<1e-11 || ii==max_step
+    if ii>1 && abs(iteration_f(ii)-iteration_f(ii-1))<1e-15 || ii==max_step
         f=iteration_f(ii);
         x=iteration_x(:,ii);
         fprintf("steps = %d \n", ii-1)
