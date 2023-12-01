@@ -1,0 +1,11 @@
+fun=@ex6_objective1;
+x0=[5;5];
+A=[];
+b=[];
+Aeq=[];
+beq=[];
+lb=[0;0];
+ub=[10;10];
+nonlcon=@constrain_1;
+[x,fval,exitflag]=fmincon(fun,x0,A,b,Aeq,beq,lb,ub,nonlcon);
+f2=ex6_objective2(x);

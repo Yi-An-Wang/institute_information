@@ -1,0 +1,12 @@
+function [f1_str,f2_x1_str,x1_str]=f2_value_at_x1_star()
+fun=@ex6_objective1;
+x0=[5;5];
+A=[];
+b=[];
+Aeq=[];
+beq=[];
+lb=[0;0];
+ub=[10;10];
+nonlcon=@constrain_1;
+[x1_str,f1_str]=fmincon(fun,x0,A,b,Aeq,beq,lb,ub,nonlcon);
+f2_x1_str=ex6_objective2(x1_str);
