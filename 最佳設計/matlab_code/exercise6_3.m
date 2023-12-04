@@ -7,13 +7,13 @@ scatter(f1,f2);
 hold on
 text(f1_str,f2_str+2,"Utopia")
 
-N=50;
-fi=zeros(1,N);
+N=10;
+f1i=zeros(1,N);
 for ii=1:N
     if ii==1
-        fi(1)=f1_str+(f1_x2_str-f1_str)/N;
+        f1i(1)=f1_str+(f1_x2_str-f1_str)/N;
     else
-        fi(ii)=fi(ii-1)+(f1_x2_str-f1_str)/N;
+        f1i(ii)=f1i(ii-1)+(f1_x2_str-f1_str)/N;
     end
 end
 
@@ -23,7 +23,7 @@ for ii=1:N
     fun=@ex6_objective2;
     x0=[5;5];
     A=[1,1];
-    b=fi(ii);
+    b=f1i(ii);
     Aeq=[];
     beq=[];
     lb=[0;0];
@@ -32,7 +32,7 @@ for ii=1:N
     [optima_x(:,ii),f2i(ii)]=fmincon(fun,x0,A,b,Aeq,beq,lb,ub,nonlcon);
 end
 
-scatter(fi,f2i);
+scatter(f1i,f2i);
 grid on
 xlabel f1
 ylabel f2

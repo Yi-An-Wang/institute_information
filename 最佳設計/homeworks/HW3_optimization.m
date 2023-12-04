@@ -1,0 +1,11 @@
+function x=HW3_optimization()
+fun=@HW3_objective1;
+x0=[5;5];
+A=[];
+b=[];
+Aeq=[];
+beq=[];
+lb=[0;0];
+ub=[10;10];
+nonlcon=@HW3_constrain;
+x=fmincon(fun,x0,A,b,Aeq,beq,lb,ub,nonlcon);

@@ -1,4 +1,5 @@
-mux=[3.1139, 2.0626]; % you should change to the optimal design you obtained
+optimal_design=HW3_optimization();
+mux=optimal_design'; % you should change to the optimal design you obtained
 stdx=[0.3, 0.3]; % you should change this value according to the homework descriptions
 covX=[stdx(1)^2, 0; 0, stdx(2)^2];
 
@@ -47,4 +48,5 @@ xlabel percentage
 RE=string(percents*100);
 SULT=repmat("%",3,20);
 RESULT=RE+SULT;
+sprintf("the failure percentage of each constrains for 20 times:")
 disp(RESULT)
