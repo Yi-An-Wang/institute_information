@@ -1,0 +1,11 @@
+load("U.S._industrial_Sales_and_Profit.mat");
+x_bar=mean(M);
+A=M-repmat(x_bar,10,1);
+SSD=(sum(A.^2)./(10-1)).^(1/2);
+B=A./SSD;
+Covariance_Matrix=(1/(10-1))*(A')*A;
+Correlation_Matrix=(1/(10-1))*(B')*B;
+disp("Covariance_Matrix")
+disp(Covariance_Matrix);
+disp("Correlation_Matrix")
+disp(Correlation_Matrix);
