@@ -1,0 +1,9 @@
+function [delta,alpha]=project_data()
+path=[0 0; 1 2; 2 3; 3 2; 0.799 1.42];
+delta_abs=(path(:,1).^2+path(:,2).^2).^(1/2);
+delta_rotate=atan(path(:,2)./path(:,1));
+delta_abs=delta_abs(2:5);
+delta_rotate=delta_rotate(2:5);
+delta=delta_abs.*exp(delta_rotate.*1i);
+delta=[0; delta];
+alpha=[0; 45*180/pi; 0; 315*180/pi; 59*180/pi];
