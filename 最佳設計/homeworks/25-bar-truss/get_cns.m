@@ -9,7 +9,7 @@ c(1:25) = abs(stress)/allow_stress - 1.0;
 
 disp = zeros(1,2);
 for i = 1:2  % node 1, 2
-    disp(i) = sqrt(Q(3*i-2)^2 + Q(3*i-1)^2 + Q(3*i)^2);
+    disp(i) = sqrt(Q(3*i-2)^2 + Q(3*i-1)^2 + Q(3*i)^2); % total displacementof node 1,2 =square_root(displacement in x,y,z directions)
 end
 
 c = [c, disp./allow_disp - 1.0];
