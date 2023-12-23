@@ -1,6 +1,6 @@
-function [Q, stress] = get_model_result(x)
+function [Q, stress] = get_model_result(x,E)
 
-    E = 1e7;  % young's modulus
+    %E = 1e7;  %E is young's modulus in psi
     
     node_coord(1,:) = [-37.5, 0, 200];
     node_coord(2,:) = [37.5, 0, 200];

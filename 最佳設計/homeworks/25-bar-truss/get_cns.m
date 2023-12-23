@@ -1,6 +1,6 @@
-function [c, ceq] = get_cns(x)
+function [c, ceq] = get_cns(x,E)
 
-[Q, stress] = get_model_result(x);
+[Q, stress] = get_model_result(x,E);
 
 allow_stress = 40000;  % psi
 allow_disp = 0.35;  % inch
