@@ -11,8 +11,10 @@ D2=det(T2);
 D3=-det(T3);
 D4=det(T4);
 D1=-D2-D3-D4;
+disp(['   ','Delta_1','            ','Delta_2'...
+    ,'            ','Delta_3','            ','Delta_4'])
 disp([D1 D2 D3 D4])
-%%
+%% solve W,Z and check
 be2=60/180*pi;
 be3=68.1050/180*pi;
 be4=55.5630/180*pi;
@@ -37,6 +39,8 @@ angle_W=atan2(imag(x(1)),real(x(1)));
 Z=abs(x(2));
 angle_Z=atan2(imag(x(2)),real(x(2)));
 
-%%
+%% print
+disp('length of W & Z :')
 disp([W,Z])
+disp('angle of W & Z :')
 disp([angle_W/pi*180,angle_Z/pi*180])
