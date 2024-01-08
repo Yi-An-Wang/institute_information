@@ -30,13 +30,13 @@ function [robots ,flag_stop]=execute_one_step(dt,robots,k_size)
 %         delete(gcp('nocreate'))       %  close parallel processes 
     
         for i=1:1:ROBOTS_NUM
-%             if i==1
-%               robots(i).drawCone();
-%               robots(i).drawNearestNeighborLine(robots);
-%             end
+            if i==1
+              robots(i).drawCone();
+              % robots(i).drawNearestNeighborLine(robots);
+            end
 
-%             robots(i).drawVelocity(); % draws direction of velocity
-%             robots(i).drawPath();          % drasw agents path
+            robots(i).drawVelocity(); % draws direction of velocity
+            robots(i).drawPath();          % drasw agents path
             robots(i).Cones = [];          %clear list of cones
 
         end

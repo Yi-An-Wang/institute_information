@@ -55,9 +55,9 @@ if EX==1
     dt=0.1; k_size=30;
     alpha1=0.5 ;  v_max=5; acc=10; vel_dif1=acc*dt; size1=10; 
     alpha2=0.5 ;  v_max2=5; acc=10; vel_dif2=acc*dt; size2=10; 
-    robots = [ robots RobotClass([-50;0],[50;0],[0;0], 'red', alpha1, v_max,  vel_dif1, size1, 'circle')];
-    robots = [ robots RobotClass([50;0],[-50;0],[-5;0], 'green', alpha2, v_max2, vel_dif1, size2, 'circle')];
-    % robots = [ robots RobotClass([0;0],[0;0],[1;0], 'black', 0.5, 10, 20, 'circle')];
+    robots = [ robots RobotClass([-50;-50],[50;50],[0;0], 'red', alpha1, v_max,  vel_dif1, size1, 'circle')];
+    robots = [ robots RobotClass([50;-50],[-50;50],[0;0], 'green', alpha2, v_max2, vel_dif1, size2, 'circle')];
+   % robots = [ robots RobotClass([0;-30],[0;30],[0;0], 'black', 0, 5, 1, 10, 'circle')];
 
 elseif EX==2
     % % 4*nmax ROBOTS IN A CIRCLE of Radius R
