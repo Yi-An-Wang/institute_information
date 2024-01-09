@@ -31,7 +31,7 @@ function [robots ,flag_stop]=execute_one_step(dt,robots,k_size)
     
         for i=1:1:ROBOTS_NUM
             if i==1
-              robots(i).drawCone();
+              % robots(i).drawCone();
               % robots(i).drawNearestNeighborLine(robots);
             end
 

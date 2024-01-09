@@ -53,11 +53,11 @@ robots = [] ;
 if EX==1
     % TWO or THREE ROBOTS
     dt=0.1; k_size=30;
-    alpha1=0.5 ;  v_max=5; acc=10; vel_dif1=acc*dt; size1=10; 
-    alpha2=0.5 ;  v_max2=5; acc=10; vel_dif2=acc*dt; size2=10; 
-    robots = [ robots RobotClass([-50;-50],[50;50],[0;0], 'red', alpha1, v_max,  vel_dif1, size1, 'circle')];
-    robots = [ robots RobotClass([50;-50],[-50;50],[0;0], 'green', alpha2, v_max2, vel_dif1, size2, 'circle')];
-   % robots = [ robots RobotClass([0;-30],[0;30],[0;0], 'black', 0, 5, 1, 10, 'circle')];
+    alpha1=1 ;  v_max=5; acc=10; vel_dif1=acc*dt; size1=10; 
+    alpha2=0 ;  v_max2=5; acc=10; vel_dif2=acc*dt; size2=10; 
+    robots = [ robots RobotClass([-80;0],[80;0],[0;0], 'red', alpha1, v_max,  vel_dif1, size1, 'circle')];
+    robots = [ robots RobotClass([80;0],[-80;0],[0;0], 'green', alpha2, v_max2, vel_dif1, size2, 'circle')];
+%     robots = [ robots RobotClass([0;-30],[0;30],[0;0], 'black', 0, 5, 1, 10, 'circle')];
 
 elseif EX==2
     % % 4*nmax ROBOTS IN A CIRCLE of Radius R
@@ -233,6 +233,7 @@ text( -99, 90, [' Max Speed: ',num2str(v_max), ' m/s Accel: ',num2str(acc),' m/s
 hold on 
 drawnow
 
+pause(3)
 flag_stop=1; %CC
 
 % animation
@@ -325,8 +326,8 @@ text( 20,-70, ['# Speed Samples  :   ',num2str(N_samples)],'FontSize',fntsz);
 text( 20,-80, ['Execution Time (norm) : ',num2str(exec_time),' s (',num2str(exec_time_rel),')'],'FontSize',fntsz);
 text( 20,-90, ['ExecTime/Robot (norm): ',num2str(ceil(10*(exec_time/N_robots))/10),' s (',num2str(ceil(100*exec_time_rel/N_robots)/100),')'],'FontSize',fntsz);
 
-figure(2) 
-step_time_plot(N_steps+1)=0;
-plot(step_time_plot);
-title('Execution Time per simulation step (secs)');
-text( 10, 0.95*max(step_time_plot), [num2str(N_robots),' Robots, Max Speed: ',num2str(v_max), ' m/s Accel: ',num2str(acc),' m/s^2 Sensor Range (k-size): ',num2str(k_size)],'FontSize',fntsz);
+% figure(2) 
+% step_time_plot(N_steps+1)=0;
+% plot(step_time_plot);
+% title('Execution Time per simulation step (secs)');
+% text( 10, 0.95*max(step_time_plot), [num2str(N_robots),' Robots, Max Speed: ',num2str(v_max), ' m/s Accel: ',num2str(acc),' m/s^2 Sensor Range (k-size): ',num2str(k_size)],'FontSize',fntsz);
