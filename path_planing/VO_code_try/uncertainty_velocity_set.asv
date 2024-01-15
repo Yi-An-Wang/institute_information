@@ -1,0 +1,5 @@
+v1_r=3;
+v2_r=5;
+k=linspace(0,2*pi);
+v1=[3+v1_r*cos(k); -5+v1_r*sin(k)];
+v2=[2+v2_r*cos(k); -7+v2_r*sin(k)];
