@@ -18,6 +18,10 @@ classdef Differential_robot_try1
         v_r % right wheel velocity double
         R_c % radius of curvature double
 
+    %  Limit
+        a
+        v_max
+
     % for ploting Appearance
         presentation % hgtransform
         color % [R G B] or 'char'
@@ -28,6 +32,9 @@ classdef Differential_robot_try1
             % Specification
             obj.R = robot_radius;
             obj.L = L;
+            % Limit
+            obj.a = 6;
+            obj.v_max = 30;
             % Pose
             obj.p = ini_position;
             obj.orientation = ini_orientation;
@@ -70,10 +77,10 @@ classdef Differential_robot_try1
             x = obj.p(1) + 1/kapa*(sin(obj.orientation+kapa*obj.V*delta_t)-sin(obj.orientation));
             y = obj.p(2) - 1/kapa*(cos(obj.orientation+kapa*obj.V*delta_t)-cos(obj.orientation));
             obj.orientation = obj.orientation+kapa*obj.V*delta_t;
-            obj.update([x; y])
+            obj = obj.update([x; y]);
         end
 
-        function test(obj,newcolor)
+        function obj = test(obj,newcolor)
             obj.color = newcolor;
             set(obj.presentation.Children,'FaceColor',obj.color)
             obj.update([3;45])
