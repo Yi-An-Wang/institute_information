@@ -5,16 +5,18 @@ L=12;
 
 H_c=[1 0 0; 0 1 L/2; 1 0 0; 0 1 -L/2];
 
-T_matrix=[cos(orientation) sin(orientation); -sin(orientation) cos(orientation)];
-v_target=T_matrix*V_new;
+I2R_T_matrix=[cos(orientation) sin(orientation); -sin(orientation) cos(orientation)];
+v_target=I2R_T_matrix*V_new;
 V_old=[V_old; 0];
 V_new=[V_new; 0];
+%% check ccw or cw
 z=cross(V_old,V_new);
 if z(3)==abs(z(3))
     direction=1;
 else 
     direction=-1;
 end
+%%
 if mode~="crab"
     omega=direction/delta_t*acos(dot(V_old,V_new)/(sqrt(V_old(1)^2+V_old(2)^2)*sqrt(V_new(1)^2+V_new(2)^2)));
 else
