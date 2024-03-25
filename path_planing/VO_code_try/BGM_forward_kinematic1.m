@@ -1,4 +1,4 @@
-function [v_f,v_r,theta_f,theta_r]=BGM_forward_kinematic1(mode,v_global_original,v_global_new,orientation)
+function [v_f,v_r,theta_f,theta_r]=BGM_forward_kinematic1(mode,orientation,v_global_new,v_global_original)
 % if differential mode, the orientation should + pi/2
 % out put v and theta still depend on the original robot coordinate
 % input v is a 2*1 vector

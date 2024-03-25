@@ -28,8 +28,13 @@ axis([-(Area_X+1) (Area_X+1) -(Area_Y+1) (Area_Y+1)])
 grid on
 circle_0=hgtransform;
 patch('XData',x,'YData',y,'Facecolor',color1,'Parent',circle_0);
+line=animatedline;
+set(line,'Parent',circle_0)
+addpoints(line,[0;0],[0;20]);
+
 rectangle_1=hgtransform;
 patch('Faces',[1 2 3 4],'Vertices',rec,'Facecolor',color2,'Parent',rectangle_1);
+
 rectangle_2=hgtransform;
 patch('Faces',[1 2 3 4],'Vertices',rec,'Facecolor',color2,'Parent',rectangle_2);
 set(rectangle_1,'Parent',circle_0)
@@ -45,3 +50,4 @@ for ii=1:100
     scatter(Pos(1,ii),Pos(2,ii),'.')
     pause(0.1)
 end
+hold off
