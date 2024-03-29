@@ -1,7 +1,7 @@
 syms v0 a0 T s kp ki kd t
-% kp=1;
-% ki=0.01;
-% kd=0.01;
+% kp=4.309;
+% ki=4.5;
+% kd=0.1;
 L_v=(s^2*v0*(kd+1)+s*(kp*v0+(kd+1)*a0)+ki*T)/((kd+1)*s^3+kp*s^2+ki*s);
 v=ilaplace(L_v);
 a=diff(v,t);
