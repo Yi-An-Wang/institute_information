@@ -73,7 +73,6 @@ classdef rectangular_GBM
 
         function draw_collision_pos(obj)
             if obj.collision_bool==1
-                obj.collision_bool=0;
                 patch('Faces',[1 2 3 4],'Vertices',obj.d_points(:,1:4)','EdgeColor','red','FaceColor','none','LineWidth',1)
                 hold on
                 scatter(obj.center_position(1),obj.center_position(2),'black*')

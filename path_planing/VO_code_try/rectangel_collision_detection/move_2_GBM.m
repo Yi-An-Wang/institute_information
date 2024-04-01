@@ -22,5 +22,5 @@ for ii=1:steps
     robot2.collision_bool=robot1.collision_bool;
     robot1.draw_collision_pos
     robot2.draw_collision_pos
-    pause(0.1)
+    pause(0.05)
 end
