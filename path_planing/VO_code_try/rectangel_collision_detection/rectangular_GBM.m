@@ -146,6 +146,38 @@ classdef rectangular_GBM
                 act_cmd(3)=obj.v_r_max;
                 exceed_bool=1;
             end
+            if abs(actuators_cmd(1)-obj.v_f)>obj.delta_v_f_max
+                if actuators_cmd(1)>obj.v_f
+                    act_cmd(1)=obj.v_f+obj.delta_v_f_max;
+                else
+                    act_cmd(1)=obj.v_f-obj.delta_v_f_max;
+                end
+                exceed_bool=1;
+            end
+            if abs(actuators_cmd(2)-obj.theta_f)>obj.delta_theta_f_max
+                if actuators_cmd(2)>obj.theta_f
+                    act_cmd(2)=obj.theta_f+obj.delta_theta_f_max;
+                else
+                    act_cmd(1)=obj.theta_f-obj.delta_theta_f_max;
+                end
+                exceed_bool=1;
+            end
+            if abs(actuators_cmd(3)-obj.v_r)>obj.delta_v_r_max
+                if actuators_cmd(3)>obj.v_r
+                    act_cmd(3)=obj.v_r+obj.delta_v_r_max;
+                else
+                    act_cmd(3)=obj.v_r-obj.delta_v_r_max;
+                end
+                exceed_bool=1;
+            end
+             if abs(actuators_cmd(4)-obj.theta_r)>obj.delta_theta_r_max
+                if actuators_cmd(4)>obj.theta_r
+                    act_cmd(4)=obj.theta_r+obj.delta_theta_r_max;
+                else
+                    act_cmd(4)=obj.theta_r-obj.delta_theta_r_max;
+                end
+                exceed_bool=1;
+            end
             if exceed_bool==1
                 % check the constraint
                 if act_cmd(1)*cos(act_cmd(2))-act_cmd(3)*cos(act_cmd(4))>=1e-14
@@ -161,29 +193,6 @@ classdef rectangular_GBM
             end
             H_for=[1/2 0 1/2 0; 0 1/2 0 1/2; 0 1/obj.L 0 -1/obj.L];
             obj.local_motion=H_for*xy_cmd;
-            % cmd=actuators_cmd;
-            % exceed=0;
-            % if cmd(1)>obj.v_f_max
-            %     cmd(1)=obj.v_f_max;
-            %     exceed=1;
-            % end
-            % if cmd(3)>obj.v_r_max
-            %     cmd(3)=obj.v_r_max;
-            %     exceed=1;
-            % end
-            % % check the constraint
-            % if cmd(1)*cos(cmd(2))-cmd(3)*cos(cmd(4))>=1e-14
-            %     disp('wheels slip !!')
-            % end
-            % % change cmd into localmotion
-            % obj.v_f=cmd(1);
-            % obj.theta_f=cmd(2);
-            % obj.v_r=cmd(3);
-            % obj.theta_r=cmd(4);
-            % H_for=[1/2 0 1/2 0; 0 1/2 0 1/2; 0 1/obj.L 0 -1/obj.L];
-            % motion_vector=[cmd(1)*cos(cmd(2)); cmd(1)*sin(cmd(2)); cmd(3)*cos(cmd(4)); cmd(3)*sin(cmd(4))];
-            % obj.local_motion=H_for*motion_vector;
-
         end
 
         function new_pos=update_position(obj,delta_t)

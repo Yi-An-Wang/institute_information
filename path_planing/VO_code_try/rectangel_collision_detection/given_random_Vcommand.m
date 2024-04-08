@@ -15,16 +15,18 @@ actuate_cmd2=zeros(4,steps);
 v_vector1=zeros(4,steps);
 v_vector2=zeros(4,steps);
 
+frames=cell(steps,1);
+
 for ii=2:steps
     v1_cmd(1,ii)=v1_cmd(1,ii-1)+randn;
     v2_cmd(1,ii)=v2_cmd(1,ii-1)+randn;
     v1_cmd(2,ii)=v1_cmd(2,ii-1)+randn;
     v2_cmd(2,ii)=v2_cmd(2,ii-1)+randn;
-    v1_cmd(3,ii)=v1_cmd(3,ii-1)+randn*0.01;
-    v2_cmd(3,ii)=v2_cmd(3,ii-1)+randn*0.01;
+    v1_cmd(3,ii)=v1_cmd(3,ii-1)+randn*5e-3;
+    v2_cmd(3,ii)=v2_cmd(3,ii-1)+randn*5e-3;
 end
-robot1=rectangular_GBM([50; 50; 0],100,50,58,[0.1 0.6 0.3]);
-robot2=rectangular_GBM([-50; -50; 0],100,50,58,[0.4 0.3 0.7]);
+robot1=rectangular_GBM([75; 75; 0],100,50,58,[0.1 0.6 0.3]);
+robot2=rectangular_GBM([-75; -75; 0],100,50,58,[0.4 0.3 0.7]);
 for ii=1:steps
     [actuate_cmd1(:,ii),v_vector1(:,ii)]=robot1.inverse_kinematics(v1_cmd(:,ii));
     [actuate_cmd2(:,ii),v_vector2(:,ii)]=robot2.inverse_kinematics(v2_cmd(:,ii));
@@ -45,4 +47,12 @@ for ii=1:steps
         scatter(robot2.center_position(1),robot2.center_position(2),'b.')
         hold off
     end
+    frames{ii}=getframe(gcf);
 end
+
+video=VideoWriter('given_random_Vcommand.avi');
+open(video)
+for ii=1:steps
+    writeVideo(video,frames{ii});
+end
+close(video)
