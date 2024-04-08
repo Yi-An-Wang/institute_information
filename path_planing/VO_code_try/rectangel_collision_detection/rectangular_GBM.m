@@ -14,12 +14,13 @@ classdef rectangular_GBM
         v_r
         theta_f
         theta_r
+        local_motion=[0; 0; 0];
         collision_bool=0;
 
-        v_f_max=10;
-        v_r_max=10;
-        delta_v_f_max=1;
-        delta_v_r_max=1;
+        v_f_max=500; %500 cm/s
+        v_r_max=500;
+        delta_v_f_max=100;
+        delta_v_r_max=100;
         delta_theta_f_max=0.3;
         delta_theta_r_max=0.3;
 
@@ -62,7 +63,7 @@ classdef rectangular_GBM
             obj.GBM_fig=hgtransform;
             patch('Faces',[1 2 3 4],'Vertices',[D/2 W/2; D/2 -W/2; -D/2 -W/2; -D/2 W/2],'Facecolor',color,'Parent',obj.GBM_fig);
             obj.GBM_fig.Matrix=makehgtform("translate",[obj.center_position; 0])*makehgtform("zrotate",obj.GBM_pos(3));
-            wheel_rec=[-1.5 0.5; 1.5 0.5; 1.5 -0.5; -1.5 -0.5];
+            wheel_rec=[-15 4; 15 4; 15 -4; -15 -4];
             obj.wheel_fig1=hgtransform;
             set(obj.wheel_fig1,'Parent',obj.GBM_fig)
             patch('Faces',[1 2 3 4],'Vertices',wheel_rec,'Facecolor',[0.1 0.1 0],'Parent',obj.wheel_fig1);
@@ -90,8 +91,8 @@ classdef rectangular_GBM
             obj.wheel_fig2.Matrix=makehgtform("translate",[-obj.L/2; 0; 0])*makehgtform("zrotate",wheel_pos(2));
             fig_change=makehgtform("translate",[new_pos(1:2); 0])*makehgtform("zrotate",new_pos(3));
             set(obj.GBM_fig,'Matrix',fig_change)
-            hold on 
-            scatter(new_pos(1),new_pos(2),'.')
+            % hold on 
+            % scatter(new_pos(1),new_pos(2),'.')
             % pause(0.005)
             hold off
         end
@@ -105,7 +106,7 @@ classdef rectangular_GBM
             end
         end
 
-        function actuators_cmd=inverse_kinematics(obj,local_motion)
+        function [actuators_cmd,v_vector]=inverse_kinematics(obj,local_motion)
             % local_motion=>[v_x; v_y; omega]
             % actuators=>[v_f; theta_f; v_r; theta_r]
             actuators_cmd=zeros(4,1);
@@ -127,40 +128,76 @@ classdef rectangular_GBM
             robot_motion=T_matrix*global_motion;
         end
 
-        function [local_motion,obj]=actuate(obj,actuators_cmd)
-            cmd=actuators_cmd;
-            if cmd(1)>obj.v_f_max
-                cmd(1)=obj.v_f_max;
+        function obj=actuate(obj,actuators_cmd,fr_xy_cmd) % there is a little runoff when changing cylinder coordinate to xy_coordinate
+            switch nargin
+                case 3
+                    xy_cmd=fr_xy_cmd;
+                    non=0;
+                otherwise
+                    non=1;
             end
-            if cmd(3)>obj.v_r_max
-                cmd(3)=obj.v_r_max;
+            exceed_bool=0;
+            act_cmd=actuators_cmd;
+            if actuators_cmd(1)>obj.v_f_max
+                act_cmd(1)=obj.v_f_max;
+                exceed_bool=1;
             end
-
-            % check the constraint 
-            if cmd(1)*cos(cmd(2))~=cmd(3)*cos(cmd(4))
-                disp('wheels slip !!')
+            if actuators_cmd(3)>obj.v_r_max
+                act_cmd(3)=obj.v_r_max;
+                exceed_bool=1;
             end
-
-            obj.v_f=cmd(1);
-            obj.theta_f=cmd(2);
-            obj.v_r=cmd(3);
-            obj.theta_r=cmd(4);
+            if exceed_bool==1
+                % check the constraint
+                if act_cmd(1)*cos(act_cmd(2))-act_cmd(3)*cos(act_cmd(4))>=1e-14
+                    disp('wheel slip!!')
+                end
+            end
+            obj.v_f=act_cmd(1);
+            obj.theta_f=act_cmd(2);
+            obj.v_r=act_cmd(3);
+            obj.theta_r=act_cmd(4);
+            if non==1 || exceed_bool==1
+                xy_cmd=[act_cmd(1)*cos(act_cmd(2)); act_cmd(1)*sin(act_cmd(2)); act_cmd(3)*cos(act_cmd(4)); act_cmd(3)*sin(act_cmd(4))];
+            end
             H_for=[1/2 0 1/2 0; 0 1/2 0 1/2; 0 1/obj.L 0 -1/obj.L];
-            local_motion=H_for*cmd;
+            obj.local_motion=H_for*xy_cmd;
+            % cmd=actuators_cmd;
+            % exceed=0;
+            % if cmd(1)>obj.v_f_max
+            %     cmd(1)=obj.v_f_max;
+            %     exceed=1;
+            % end
+            % if cmd(3)>obj.v_r_max
+            %     cmd(3)=obj.v_r_max;
+            %     exceed=1;
+            % end
+            % % check the constraint
+            % if cmd(1)*cos(cmd(2))-cmd(3)*cos(cmd(4))>=1e-14
+            %     disp('wheels slip !!')
+            % end
+            % % change cmd into localmotion
+            % obj.v_f=cmd(1);
+            % obj.theta_f=cmd(2);
+            % obj.v_r=cmd(3);
+            % obj.theta_r=cmd(4);
+            % H_for=[1/2 0 1/2 0; 0 1/2 0 1/2; 0 1/obj.L 0 -1/obj.L];
+            % motion_vector=[cmd(1)*cos(cmd(2)); cmd(1)*sin(cmd(2)); cmd(3)*cos(cmd(4)); cmd(3)*sin(cmd(4))];
+            % obj.local_motion=H_for*motion_vector;
+
         end
 
-        function obj=update_position(obj,delta_t)
-            local_motion=[obj.v_f; obj.theta_f; obj.v_r; obj.theta_r];
-            T_matrix=[cos(obj.GBM_pos(3)) -sin(obj.GBM_pos(3)) 0; sin(obj.GBM_pos(3)) cos(obj.GBM_pos(3)) 0; 0 0 1];
-            global_motion=T_matrix*local_motion;
-            obj.GBM_pos=obj.GBM_pos+global_motion*delta_t;
-            obj.center_position=obj.GBM_pos(1:2);
-            rotate_M=[cos(obj.GBM_pos(3)) -sin(obj.GBM_pos(3)); sin(obj.GBM_pos(3)) cos(obj.GBM_pos(3))];
-            obj.d_points(:,1)=obj.center_position+rotate_M*[obj.D/2; obj.W/2];
-            obj.d_points(:,2)=obj.center_position+rotate_M*[obj.D/2; -obj.W/2];
-            obj.d_points(:,3)=obj.center_position+rotate_M*[-obj.D/2; -obj.W/2];
-            obj.d_points(:,4)=obj.center_position+rotate_M*[-obj.D/2; obj.W/2];
-            obj.d_points(:,5)=obj.center_position;
+        function new_pos=update_position(obj,delta_t)
+            new_pos=zeros(3,1);
+            new_pos(3)=obj.GBM_pos(3)+obj.local_motion(3)*delta_t;
+            if obj.local_motion(3)~=0
+                a=sin(obj.GBM_pos(3)+obj.local_motion(3)*delta_t)-sin(obj.GBM_pos(3));
+                b=cos(obj.GBM_pos(3)+obj.local_motion(3)*delta_t)-cos(obj.GBM_pos(3));
+                new_pos(1)=obj.GBM_pos(1)+obj.local_motion(1)/obj.local_motion(3)*a+obj.local_motion(2)/obj.local_motion(3)*b;
+                new_pos(2)=obj.GBM_pos(2)-obj.local_motion(1)/obj.local_motion(3)*b+obj.local_motion(2)/obj.local_motion(3)*a;
+            else
+                new_pos(1)=obj.GBM_pos(1)+obj.local_motion(1)*delta_t*cos(obj.GBM_pos(3))-obj.local_motion(2)*delta_t*sin(obj.GBM_pos(3));
+                new_pos(2)=obj.GBM_pos(2)+obj.local_motion(1)*delta_t*sin(obj.GBM_pos(3))+obj.local_motion(2)*delta_t*cos(obj.GBM_pos(3));
+            end
         end
     end
 end
