@@ -128,16 +128,9 @@ classdef rectangular_GBM
             robot_motion=T_matrix*global_motion;
         end
 
-        function obj=actuate(obj,actuators_cmd,fr_xy_cmd) % there is a little runoff when changing cylinder coordinate to xy_coordinate
-            switch nargin
-                case 3
-                    xy_cmd=fr_xy_cmd;
-                    non=0;
-                otherwise
-                    non=1;
-            end
-            exceed_bool=0;
+        function [exceed_bool, xy_cmd, act_cmd]=check_kinematic_constraints(obj,actuators_cmd)
             act_cmd=actuators_cmd;
+            exceed_bool=0;
             if actuators_cmd(1)>obj.v_f_max
                 act_cmd(1)=obj.v_f_max;
                 exceed_bool=1;
@@ -170,7 +163,7 @@ classdef rectangular_GBM
                 end
                 exceed_bool=1;
             end
-             if abs(actuators_cmd(4)-obj.theta_r)>obj.delta_theta_r_max
+            if abs(actuators_cmd(4)-obj.theta_r)>obj.delta_theta_r_max
                 if actuators_cmd(4)>obj.theta_r
                     act_cmd(4)=obj.theta_r+obj.delta_theta_r_max;
                 else
@@ -178,18 +171,83 @@ classdef rectangular_GBM
                 end
                 exceed_bool=1;
             end
-            if exceed_bool==1
-                % check the constraint
-                if act_cmd(1)*cos(act_cmd(2))-act_cmd(3)*cos(act_cmd(4))>=1e-14
-                    disp('wheel slip!!')
-                end
+            xy_cmd=[act_cmd(1)*cos(act_cmd(2)); act_cmd(1)*sin(act_cmd(2)); act_cmd(3)*cos(act_cmd(4)); act_cmd(3)*sin(act_cmd(4))];
+            if exceed_bool==1 && xy_cmd(1)~=xy_cmd(3)
+                disp('wheel slip!!')
+                H_i=[1 0 0; 0 1 obj.L/2; 1 0 0; 0 1 -obj.L/2];
+                H_f=[1/2 0 1/2 0; 0 1/2 0 1/2; 0 1/obj.L 0 -1/obj.L];
+                xy_cmd=H_i*H_f*xy_cmd;
+                act_cmd(1)=(xy_cmd(1)^2+xy_cmd(2)^2)^0.5;
+                act_cmd(2)=atan2(xy_cmd(2),xy_cmd(1));
+                act_cmd(3)=(xy_cmd(3)^2+xy_cmd(4)^2)^0.5;
+                act_cmd(4)=atan2(xy_cmd(4),xy_cmd(3));
             end
-            obj.v_f=act_cmd(1);
-            obj.theta_f=act_cmd(2);
-            obj.v_r=act_cmd(3);
-            obj.theta_r=act_cmd(4);
+        end
+
+        function [obj, xy_cmd, modify_act_cmd]=actuate(obj,actuators_cmd,fr_xy_cmd) % there is a little runoff when changing cylinder coordinate to xy_coordinate
+            switch nargin
+                case 3
+                    xy_cmd=fr_xy_cmd;
+                    non=0;
+                otherwise
+                    xy_cmd=zeros(4,1);
+                    non=1;
+            end
+            [exceed_bool, modify_xy_cmd, modify_act_cmd]=obj.check_kinematic_constraints(actuators_cmd);
+%             exceed_bool=0;
+%             act_cmd=actuators_cmd;
+%             if actuators_cmd(1)>obj.v_f_max
+%                 act_cmd(1)=obj.v_f_max;
+%                 exceed_bool=1;
+%             end
+%             if actuators_cmd(3)>obj.v_r_max
+%                 act_cmd(3)=obj.v_r_max;
+%                 exceed_bool=1;
+%             end
+%             if abs(actuators_cmd(1)-obj.v_f)>obj.delta_v_f_max
+%                 if actuators_cmd(1)>obj.v_f
+%                     act_cmd(1)=obj.v_f+obj.delta_v_f_max;
+%                 else
+%                     act_cmd(1)=obj.v_f-obj.delta_v_f_max;
+%                 end
+%                 exceed_bool=1;
+%             end
+%             if abs(actuators_cmd(2)-obj.theta_f)>obj.delta_theta_f_max
+%                 if actuators_cmd(2)>obj.theta_f
+%                     act_cmd(2)=obj.theta_f+obj.delta_theta_f_max;
+%                 else
+%                     act_cmd(1)=obj.theta_f-obj.delta_theta_f_max;
+%                 end
+%                 exceed_bool=1;
+%             end
+%             if abs(actuators_cmd(3)-obj.v_r)>obj.delta_v_r_max
+%                 if actuators_cmd(3)>obj.v_r
+%                     act_cmd(3)=obj.v_r+obj.delta_v_r_max;
+%                 else
+%                     act_cmd(3)=obj.v_r-obj.delta_v_r_max;
+%                 end
+%                 exceed_bool=1;
+%             end
+%              if abs(actuators_cmd(4)-obj.theta_r)>obj.delta_theta_r_max
+%                 if actuators_cmd(4)>obj.theta_r
+%                     act_cmd(4)=obj.theta_r+obj.delta_theta_r_max;
+%                 else
+%                     act_cmd(4)=obj.theta_r-obj.delta_theta_r_max;
+%                 end
+%                 exceed_bool=1;
+%             end
+%             if exceed_bool==1
+%                 % check the constraint
+%                 if act_cmd(1)*cos(act_cmd(2))-act_cmd(3)*cos(act_cmd(4))>=1e-14
+%                     disp('wheel slip!!')
+%                 end
+%             end
+            obj.v_f=modify_act_cmd(1);
+            obj.theta_f=modify_act_cmd(2);
+            obj.v_r=modify_act_cmd(3);
+            obj.theta_r=modify_act_cmd(4);
             if non==1 || exceed_bool==1
-                xy_cmd=[act_cmd(1)*cos(act_cmd(2)); act_cmd(1)*sin(act_cmd(2)); act_cmd(3)*cos(act_cmd(4)); act_cmd(3)*sin(act_cmd(4))];
+                xy_cmd=modify_xy_cmd;
             end
             H_for=[1/2 0 1/2 0; 0 1/2 0 1/2; 0 1/obj.L 0 -1/obj.L];
             obj.local_motion=H_for*xy_cmd;
