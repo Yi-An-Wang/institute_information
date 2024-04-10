@@ -67,7 +67,8 @@ end
 
 t=0.1:0.1:steps*0.1;
 figure(2)
-plot(t,v1_cmd(1,:),t,robot1_state(1,:))
+plot(t,v2_cmd(1,:),t,robot2_state(1,:))
+legend('v2_cmd_X','robot2_state_X')
 
 % video=VideoWriter('given_random_Vcommand.avi');
 % open(video)
