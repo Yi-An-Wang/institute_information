@@ -8,7 +8,7 @@ figure('Position',[10 10 1200 1000])
 axis([-(Area_X+1) (Area_X+1) -(Area_Y+1) (Area_Y+1)])
 grid on
 
-frames=cell(steps,1);
+%frames=cell(steps,1);
 
 robot1=rectangular_GBM([135; 0; 0],100,50,50,[0.4 0.2 0.6],[50; pi/40; 50; -pi/40]);
 robot2=rectangular_GBM([-700; -700; pi/8],100,50,50,[0.1 0.5 0.7],[25; pi/8; 25; pi/8]);
@@ -30,12 +30,12 @@ for ii=1:steps
         scatter(robot2.center_position(1),robot2.center_position(2),'c.')
         hold off
     end
-    frames{ii}=getframe(gcf);
+    %frames{ii}=getframe(gcf);
 end
 
-video=VideoWriter('move_GBM_with_initial_velocity.avi');
-open(video)
-for ii=1:steps
-    writeVideo(video,frames{ii})
-end
-close(video)
+% video=VideoWriter('move_GBM_with_initial_velocity.avi');
+% open(video)
+% for ii=1:steps
+%     writeVideo(video,frames{ii})
+% end
+% close(video)
