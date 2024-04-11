@@ -319,8 +319,7 @@ fprintf('Number of steps %5d  #collisions %3d \n', N_steps, N_colisions);
     % plot extracted velocity
     figure(2)
     t=0.05:0.05:N_steps*0.05;
-    plot(t,v1(1,1:N_steps),t,v1(2,1:N_steps))
-    legend('v_x','v_y')
+    plot(t,v1(1,1:327),t,v1)
 end
 
 %%%%%%%%%%%%%%%  STEP MODE %%%%%%%%%%%%%%%%%%%%%%%%%%%
