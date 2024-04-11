@@ -172,7 +172,7 @@ classdef rectangular_GBM
                 exceed_bool=1;
             end
             xy_cmd=[act_cmd(1)*cos(act_cmd(2)); act_cmd(1)*sin(act_cmd(2)); act_cmd(3)*cos(act_cmd(4)); act_cmd(3)*sin(act_cmd(4))];
-            if exceed_bool==1 && xy_cmd(1)~=xy_cmd(3)
+            if exceed_bool==1 && (xy_cmd(1)-xy_cmd(3))>1e-14
                 disp('wheel slip!!')
                 H_i=[1 0 0; 0 1 obj.L/2; 1 0 0; 0 1 -obj.L/2];
                 H_f=[1/2 0 1/2 0; 0 1/2 0 1/2; 0 1/obj.L 0 -1/obj.L];

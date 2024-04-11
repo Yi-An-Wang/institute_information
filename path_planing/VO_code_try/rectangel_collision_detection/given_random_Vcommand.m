@@ -69,6 +69,12 @@ t=0.1:0.1:steps*0.1;
 figure(2)
 plot(t,v2_cmd(1,:),t,robot2_state(1,:))
 legend('v2_cmd_X','robot2_state_X')
+figure(3)
+for ii=1:4
+    plot(t,actuate_cmd2(ii,:),t,modify_act_cmd2(ii,:))
+    hold on
+end
+legend('v_f','mv_f','theta_f','mtheta_f','v_r','mv_r','theta_r','mtheta_r')
 
 % video=VideoWriter('given_random_Vcommand.avi');
 % open(video)
