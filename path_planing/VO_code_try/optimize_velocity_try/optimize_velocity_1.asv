@@ -1,0 +1,15 @@
+L=12;
+cmd=[10; 6; 8; 9];
+w=[1 1 10];
+v_org=[9; 0.5; 9; -0.5];
+delta_v_max=[10; 0.3; 10; 0.3];
+v_max=[30; 30];
+obj=@(act) obj_function(act,cmd,L,w);
+A=[];
+b=[];
+Aeq=[1 0 -1 0];
+beq=0;
+ub=[30; 30; 30; 30];
+lb=[-30; -30; -30; -30];
+nonlcon=@(act) nonlcon_function(act,v_org,delta_v_max,v_max);
+[act,fval,exitflag,output]=fmincon(obj,[0; 0; 0; 0],A,b,Aeq,beq,lb,ub,nonlcon);
