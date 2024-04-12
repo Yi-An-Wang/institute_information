@@ -106,16 +106,16 @@ classdef rectangular_GBM
             end
         end
 
-        function [actuators_cmd,v_vector]=inverse_kinematics(obj,local_motion)
+        function [vtheta_cmd,xy_cmd]=inverse_kinematics(obj,local_motion)
             % local_motion=>[v_x; v_y; omega]
-            % actuators=>[v_f; theta_f; v_r; theta_r]
-            actuators_cmd=zeros(4,1);
+            % vtheta_cmd=>[v_f; theta_f; v_r; theta_r]
+            vtheta_cmd=zeros(4,1);
             H_ink=[1 0 0; 0 1 obj.L/2; 1 0 0; 0 1 -obj.L/2];
-            v_vector=H_ink*local_motion;
-            actuators_cmd(1)=(v_vector(1)^2+v_vector(2)^2)^0.5;
-            actuators_cmd(2)=atan2(v_vector(2),v_vector(1));
-            actuators_cmd(3)=(v_vector(3)^2+v_vector(4)^2)^0.5;
-            actuators_cmd(4)=atan2(v_vector(4),v_vector(3));
+            xy_cmd=H_ink*local_motion;
+            vtheta_cmd(1)=(xy_cmd(1)^2+xy_cmd(2)^2)^0.5;
+            vtheta_cmd(2)=atan2(xy_cmd(2),xy_cmd(1));
+            vtheta_cmd(3)=(xy_cmd(3)^2+xy_cmd(4)^2)^0.5;
+            vtheta_cmd(4)=atan2(xy_cmd(4),xy_cmd(3));
         end
 
         function global_motion=robot_v2globalv(obj,local_motion)
@@ -128,129 +128,87 @@ classdef rectangular_GBM
             robot_motion=T_matrix*global_motion;
         end
 
-        function [exceed_bool, xy_cmd, act_cmd]=check_kinematic_constraints(obj,actuators_cmd)
-            act_cmd=actuators_cmd;
+        function exceed_bool=check_kinematic_constraints(obj,actuators_cmd)
             exceed_bool=0;
-            if actuators_cmd(1)>obj.v_f_max
-                act_cmd(1)=obj.v_f_max;
+            if actuators_cmd(1)>obj.v_f_max || actuators_cmd(3)>obj.v_r_max
+                exceed_bool=1;
+            elseif abs(actuators_cmd(1)-obj.v_f)>obj.delta_v_f_max || abs(actuators_cmd(3)-obj.v_r)>obj.delta_v_r_max
+                exceed_bool=1;
+            elseif abs(actuators_cmd(2)-obj.theta_f)>obj.delta_theta_f_max || abs(actuators_cmd(4)-obj.theta_r)>obj.delta_theta_r_max
                 exceed_bool=1;
             end
-            if actuators_cmd(3)>obj.v_r_max
-                act_cmd(3)=obj.v_r_max;
-                exceed_bool=1;
-            end
-            if abs(actuators_cmd(1)-obj.v_f)>obj.delta_v_f_max
-                if actuators_cmd(1)>obj.v_f
-                    act_cmd(1)=obj.v_f+obj.delta_v_f_max;
-                else
-                    act_cmd(1)=obj.v_f-obj.delta_v_f_max;
-                end
-                exceed_bool=1;
-            end
-            if abs(actuators_cmd(2)-obj.theta_f)>obj.delta_theta_f_max
-                if actuators_cmd(2)>obj.theta_f
-                    act_cmd(2)=obj.theta_f+obj.delta_theta_f_max;
-                else
-                    act_cmd(1)=obj.theta_f-obj.delta_theta_f_max;
-                end
-                exceed_bool=1;
-            end
-            if abs(actuators_cmd(3)-obj.v_r)>obj.delta_v_r_max
-                if actuators_cmd(3)>obj.v_r
-                    act_cmd(3)=obj.v_r+obj.delta_v_r_max;
-                else
-                    act_cmd(3)=obj.v_r-obj.delta_v_r_max;
-                end
-                exceed_bool=1;
-            end
-            if abs(actuators_cmd(4)-obj.theta_r)>obj.delta_theta_r_max
-                if actuators_cmd(4)>obj.theta_r
-                    act_cmd(4)=obj.theta_r+obj.delta_theta_r_max;
-                else
-                    act_cmd(4)=obj.theta_r-obj.delta_theta_r_max;
-                end
-                exceed_bool=1;
-            end
-            xy_cmd=[act_cmd(1)*cos(act_cmd(2)); act_cmd(1)*sin(act_cmd(2)); act_cmd(3)*cos(act_cmd(4)); act_cmd(3)*sin(act_cmd(4))];
-            if exceed_bool==1 && (xy_cmd(1)-xy_cmd(3))>1e-14
-                disp('wheel slip!!')
-                H_i=[1 0 0; 0 1 obj.L/2; 1 0 0; 0 1 -obj.L/2];
-                H_f=[1/2 0 1/2 0; 0 1/2 0 1/2; 0 1/obj.L 0 -1/obj.L];
-                xy_cmd=H_i*H_f*xy_cmd;
-                act_cmd(1)=(xy_cmd(1)^2+xy_cmd(2)^2)^0.5;
-                act_cmd(2)=atan2(xy_cmd(2),xy_cmd(1));
-                act_cmd(3)=(xy_cmd(3)^2+xy_cmd(4)^2)^0.5;
-                act_cmd(4)=atan2(xy_cmd(4),xy_cmd(3));
-            end
+%             xy_cmd=[act_cmd(1)*cos(act_cmd(2)); act_cmd(1)*sin(act_cmd(2)); act_cmd(3)*cos(act_cmd(4)); act_cmd(3)*sin(act_cmd(4))];
+%             if exceed_bool==1 && xy_cmd(1)~=xy_cmd(3)
+%                 % optimize the new velocity
+%                 disp('wheel slip!!')
+%                 H_i=[1 0 0; 0 1 obj.L/2; 1 0 0; 0 1 -obj.L/2];
+%                 H_f=[1/2 0 1/2 0; 0 1/2 0 1/2; 0 1/obj.L 0 -1/obj.L];
+%                 xy_cmd=H_i*H_f*xy_cmd;
+%                 act_cmd(1)=(xy_cmd(1)^2+xy_cmd(2)^2)^0.5;
+%                 act_cmd(2)=atan2(xy_cmd(2),xy_cmd(1));
+%                 act_cmd(3)=(xy_cmd(3)^2+xy_cmd(4)^2)^0.5;
+%                 act_cmd(4)=atan2(xy_cmd(4),xy_cmd(3));
+%             end
         end
 
-        function [obj, xy_cmd, modify_act_cmd]=actuate(obj,actuators_cmd,fr_xy_cmd) % there is a little runoff when changing cylinder coordinate to xy_coordinate
+        function value=min_function(obj,act,cmd,w)
+            H_f=[1/2 0 1/2 0; 0 1/2 0 1/2; 0 1/obj.L 0 -1/obj.L];
+            value=w*(H_f*(cmd-act)).^2;
+        end
+
+        function [c,ceq]=nonlcon_function(obj,act)
+            ceq=[];
+            c(1)=act(1)^2+act(2)^2-obj.v_f_max^2;
+            c(2)=act(3)^2+act(4)^2-obj.v_r_max^2;
+            c(3)=((act(1)^2+act(2)^2)^0.5-obj.v_f)^2-obj.delta_v_f_max^2;
+            c(4)=(atan2(act(2),act(1))-obj.theta_f)^2-obj.delta_theta_f_max^2;
+            c(5)=((act(3)^2+act(4)^2)^0.5-obj.v_r)^2-obj.delta_v_r_max^2;
+            c(6)=(atan2(act(4),act(3))-obj.theta_r)^2-obj.delta_theta_r_max^2;
+        end
+
+        function [xy_act, vtheta_act]=find_optimized_velocity(obj,xy_cmd)
+            cmd=xy_cmd;
+            w=[0.1 0.1 12];
+            fun=@(act) obj.min_function(act,cmd,w);
+            A=[];
+            b=[];
+            Aeq=[1 0 -1 0];
+            beq=0;
+            ub=[obj.v_f_max; obj.v_f_max; obj.v_r_max; obj.v_r_max];
+            lb=[-obj.v_f_max; -obj.v_f_max; -obj.v_r_max; -obj.v_r_max];
+            nonlcon=@(act) obj.nonlcon_function(act);
+            [act,fval,exitflag]=fmincon(fun,[obj.v_f; obj.theta_f; obj.v_r; obj.theta_r],A,b,Aeq,beq,lb,ub,nonlcon);
+            disp([fval,exitflag])
+            xy_act=act;
+            vtheta_act=zeros(4,1);
+            vtheta_act(1)=(act(1)^2+act(2)^2)^0.5;
+            vtheta_act(2)=atan2(act(2),act(1));
+            vtheta_act(3)=(act(3)^2+act(4)^2)^0.5;
+            vtheta_act(4)=atan2(act(4),act(3));
+        end
+
+        function [obj, xy_act, vtheta_act]=actuate(obj,vtheta_cmd,xy_cmd) % there is a little runoff when changing cylinder coordinate to xy_coordinate
+            vtheta_act=vtheta_cmd;
             switch nargin
                 case 3
-                    xy_cmd=fr_xy_cmd;
-                    non=0;
+                    xy_act=xy_cmd;
                 otherwise
-                    xy_cmd=zeros(4,1);
-                    non=1;
+                    xy_act=zeros(4,1);
+                    xy_act(1)=vtheta_cmd(1)*cos(vtheta_cmd(2));
+                    xy_act(2)=vtheta_cmd(1)*sin(vtheta_cmd(2));
+                    xy_act(3)=vtheta_cmd(3)*cos(vtheta_cmd(4));
+                    xy_act(4)=vtheta_cmd(3)*sin(vtheta_cmd(4));
             end
-            [exceed_bool, modify_xy_cmd, modify_act_cmd]=obj.check_kinematic_constraints(actuators_cmd);
-%             exceed_bool=0;
-%             act_cmd=actuators_cmd;
-%             if actuators_cmd(1)>obj.v_f_max
-%                 act_cmd(1)=obj.v_f_max;
-%                 exceed_bool=1;
-%             end
-%             if actuators_cmd(3)>obj.v_r_max
-%                 act_cmd(3)=obj.v_r_max;
-%                 exceed_bool=1;
-%             end
-%             if abs(actuators_cmd(1)-obj.v_f)>obj.delta_v_f_max
-%                 if actuators_cmd(1)>obj.v_f
-%                     act_cmd(1)=obj.v_f+obj.delta_v_f_max;
-%                 else
-%                     act_cmd(1)=obj.v_f-obj.delta_v_f_max;
-%                 end
-%                 exceed_bool=1;
-%             end
-%             if abs(actuators_cmd(2)-obj.theta_f)>obj.delta_theta_f_max
-%                 if actuators_cmd(2)>obj.theta_f
-%                     act_cmd(2)=obj.theta_f+obj.delta_theta_f_max;
-%                 else
-%                     act_cmd(1)=obj.theta_f-obj.delta_theta_f_max;
-%                 end
-%                 exceed_bool=1;
-%             end
-%             if abs(actuators_cmd(3)-obj.v_r)>obj.delta_v_r_max
-%                 if actuators_cmd(3)>obj.v_r
-%                     act_cmd(3)=obj.v_r+obj.delta_v_r_max;
-%                 else
-%                     act_cmd(3)=obj.v_r-obj.delta_v_r_max;
-%                 end
-%                 exceed_bool=1;
-%             end
-%              if abs(actuators_cmd(4)-obj.theta_r)>obj.delta_theta_r_max
-%                 if actuators_cmd(4)>obj.theta_r
-%                     act_cmd(4)=obj.theta_r+obj.delta_theta_r_max;
-%                 else
-%                     act_cmd(4)=obj.theta_r-obj.delta_theta_r_max;
-%                 end
-%                 exceed_bool=1;
-%             end
-%             if exceed_bool==1
-%                 % check the constraint
-%                 if act_cmd(1)*cos(act_cmd(2))-act_cmd(3)*cos(act_cmd(4))>=1e-14
-%                     disp('wheel slip!!')
-%                 end
-%             end
-            obj.v_f=modify_act_cmd(1);
-            obj.theta_f=modify_act_cmd(2);
-            obj.v_r=modify_act_cmd(3);
-            obj.theta_r=modify_act_cmd(4);
-            if non==1 || exceed_bool==1
-                xy_cmd=modify_xy_cmd;
+            exceed_bool=obj.check_kinematic_constraints(vtheta_cmd);
+            if exceed_bool==1
+                [xy_act,vtheta_act]=obj.find_optimized_velocity(xy_cmd);
             end
+            obj.v_f=vtheta_act(1);
+            obj.theta_f=vtheta_act(2);
+            obj.v_r=vtheta_act(3);
+            obj.theta_r=vtheta_act(4);
             H_for=[1/2 0 1/2 0; 0 1/2 0 1/2; 0 1/obj.L 0 -1/obj.L];
-            obj.local_motion=H_for*xy_cmd;
+            obj.local_motion=H_for*xy_act;
         end
 
         function new_pos=update_position(obj,delta_t)

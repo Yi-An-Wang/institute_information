@@ -67,8 +67,8 @@ end
 
 t=0.1:0.1:steps*0.1;
 figure(2)
-plot(t,v2_cmd(1,:),t,robot2_state(1,:))
-legend('v2_cmd_X','robot2_state_X')
+plot(t,v2_cmd(1,:),t,robot2_state(1,:),t,v2_cmd(2,:),t,robot2_state(2,:),t,v2_cmd(3,:),t,robot2_state(3,:))
+legend('v_2 cmd_X','robot_2 state_X','v_2 cmd_Y','robot_2 state_Y','v_2 cmd_w','robot_2 state_w')
 figure(3)
 for ii=1:4
     plot(t,actuate_cmd2(ii,:),t,modify_act_cmd2(ii,:))
