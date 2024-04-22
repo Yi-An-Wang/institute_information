@@ -38,6 +38,8 @@ classdef rectangular_GBM
                     obj.v_r=initial_state(3);
                     obj.theta_f=initial_state(2);
                     obj.theta_r=initial_state(4);
+                    H_for=[1/2 0 1/2 0; 0 1/2 0 1/2; 0 1/L 0 -1/L];
+                    obj.local_motion=H_for*initial_state;
                 otherwise
                     obj.v_f=0;
                     obj.v_r=0;
