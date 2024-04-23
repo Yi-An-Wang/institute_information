@@ -30,7 +30,7 @@ end
 % EX=5:  Robots trapped in a hole
 % EX=6:  Robots with square obstacles
 % EX=7:  Robots in a raw with a moving square obstacle
-EX=1;
+EX=6;
 %INIT PARAMETERS
 %SELECT UPDATE MODE  mod=1  batch mode  mod=2 step mode
 mod=1 ; % BATCH MODE
