@@ -1,8 +1,8 @@
 r_A=1;
 r_B=1;
-p_B=[3;12];
+p_B=[3;5];
 v_B=[-2;-2];
-v_max=5;
+v_max=6;
 collision_information=zeros(6,201*201);
 
 n=1;
@@ -28,5 +28,19 @@ end
 
 color=max(collision_information(3,:))*ones(1,size(collision_information,2))-collision_information(3,:);
 figure(1)
-axis([-v_max-1 v_max+1 -v_max-1 v_max+1])
+axis([-v_max v_max -v_max v_max])
+hold on
 scatter(collision_information(1,:),collision_information(2,:),[],color,"filled")
+
+A_x=r_A*cos(linspace(0,2*pi));
+A_y=r_A*sin(linspace(0,2*pi));
+patch("XData",A_x,"YData",A_y,"FaceColor","green")
+
+B_x=p_B(1)*ones(1,100)+r_B*cos(linspace(0,2*pi));
+B_y=p_B(2)*ones(1,100)+r_B*sin(linspace(0,2*pi));
+patch("XData",B_x,'YData',B_y,"FaceColor","red")
+
+quiver(p_B(1),p_B(2),v_B(1),v_B(2),"b");
+text(p_B(1),p_B(2),'B','Color','black','FontSize',20)
+text(0,0,'A',"Color",'black','FontSize',20)
+hold off
