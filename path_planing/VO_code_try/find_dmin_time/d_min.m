@@ -1,0 +1,9 @@
+p_B=[4;5];
+v_B=[-2.6;-3];
+phi=pi/60;
+v=.6;
+obj=@(t) obj_function1(t,phi,v,p_B,v_B);
+t0=0;
+A=-1;
+b=0;
+[x,fval,exitflag]=fmincon(obj,t0,A,b);
