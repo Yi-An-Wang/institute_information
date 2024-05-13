@@ -31,6 +31,18 @@ figure(1)
 axis([-v_max v_max -v_max v_max])
 hold on
 scatter(collision_information(1,:),collision_information(2,:),[],color,"filled")
+xlabel("u_1=v_x")
+ylabel("u_2=v_y")
+
+alph=atan2(p_B(2),p_B(1));
+bel=asin((r_A+r_B)/(p_B(1)^2+p_B(2)^2)^0.5);
+x_1=linspace(0,10);
+y_1=tan(alph-bel)*x_1-2*ones(1,100);
+x_2=linspace(0,6);
+y_2=tan(alph+bel)*x_2-2*ones(1,100);
+x_1=x_1-2*ones(1,100);
+x_2=x_2-2*ones(1,100);
+plot(x_1,y_1,"r-",x_2,y_2,"r-")
 
 A_x=r_A*cos(linspace(0,2*pi));
 A_y=r_A*sin(linspace(0,2*pi));
