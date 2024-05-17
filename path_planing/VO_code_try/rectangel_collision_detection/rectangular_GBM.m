@@ -2,7 +2,7 @@ classdef rectangular_GBM
     %UNTITLED Summary of this class goes here
     %   Detailed explanation goes here
     
-    properties
+    properties % Unit: cm
         GBM_pos % [x; y ; psi]
         center_position % [x; y]
         D % GBM long
