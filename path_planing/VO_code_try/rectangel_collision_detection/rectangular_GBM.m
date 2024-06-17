@@ -170,7 +170,7 @@ classdef rectangular_GBM
 
         function [xy_act, vtheta_act]=find_optimized_velocity(obj,xy_cmd)
             cmd=xy_cmd;
-            w=[0.5 0.5 0.1+(obj.local_motion(1)^2+obj.local_motion(2)^2)^0.5/50];
+            w=[0.5 0.5 1+(obj.local_motion(1)^2+obj.local_motion(2)^2)^0.5/50];
             % w=[0.1 0.1 0];
             fun=@(act) obj.min_function(act,cmd,w);
             A=[];
