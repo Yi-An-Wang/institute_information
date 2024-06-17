@@ -17,12 +17,12 @@ classdef rectangular_GBM
         local_motion=[0; 0; 0];
         collision_bool=0;
 
-        v_f_max=500; %500 cm/s
-        v_r_max=500;
-        delta_v_f_max=100;
-        delta_v_r_max=100;
-        delta_theta_f_max=0.3;
-        delta_theta_r_max=0.3;
+        v_f_max=100; %500 cm/s
+        v_r_max=100;
+        delta_v_f_max=20;
+        delta_v_r_max=20;
+        delta_theta_f_max=0.05;
+        delta_theta_r_max=0.05;
 
         GBM_fig
         wheel_fig1
@@ -170,7 +170,8 @@ classdef rectangular_GBM
 
         function [xy_act, vtheta_act]=find_optimized_velocity(obj,xy_cmd)
             cmd=xy_cmd;
-            w=[0.1 0.1 12];
+            w=[0.5 0.5 0.1+(obj.local_motion(1)^2+obj.local_motion(2)^2)^0.5/50];
+            % w=[0.1 0.1 0];
             fun=@(act) obj.min_function(act,cmd,w);
             A=[];
             b=[];

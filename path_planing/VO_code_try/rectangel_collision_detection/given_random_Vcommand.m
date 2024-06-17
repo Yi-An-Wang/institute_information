@@ -36,7 +36,7 @@ v1_cmd(2,:)=0.0*ones(1,steps);
 v1_cmd(3,:)=pi/20*ones(1,steps);
 
 robot1=rectangular_GBM([75; 75; 0],100,50,58,[0.1 0.6 0.3]);
-robot2=rectangular_GBM([-75; -75; 0],100,50,58,[0.4 0.3 0.7],[10;0;10;0]);
+robot2=rectangular_GBM([-75; -75; 0],100,50,58,[0.4 0.3 0.7]);
 for ii=1:steps
     v2_cmd(1,ii)=robot2.local_motion(1)+randn;
     v2_cmd(2,ii)=robot2.local_motion(2)+randn;
