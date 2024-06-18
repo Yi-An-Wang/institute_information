@@ -10,8 +10,8 @@ grid on
 %% destination
 % destination=[100; 900];
 % destination=[900 900 -900 -900 900; 0 900 900 -900 -900];
-destination=2000*(rand(2,5)-rand(2,5));
-% destination=[500+900*cos(pi/2:-pi/3:-7*pi/2); -500+900*sin(pi/2:-pi/3:-7*pi/2)];
+% destination=2000*(rand(2,5)-rand(2,5));
+destination=[500+900*cos(pi/2:-pi/300:0*-pi/2); -500+900*sin(pi/2:-pi/300:0*-pi/2)];
 goal_order=1;
 goal_number=size(destination,2);
 

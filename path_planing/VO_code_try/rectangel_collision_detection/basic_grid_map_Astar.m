@@ -19,7 +19,8 @@ planner=plannerAStarGrid(plan_map);
 start=[size(map_matrix,1) 1];
 goal=[1 size(map_matrix,2)];
 ij_point=plan(planner,start,goal);
-way_point=[1000.5*ones(size(ij_point,1),1)-ij_point(:,1) ij_point(:,2)-0.5*ones(size(ij_point,1),1)];
+% way_point=[1000.5*ones(size(ij_point,1),1)-ij_point(:,1) ij_point(:,2)-0.5*ones(size(ij_point,1),1)];
+way_point=[ij_point(:,2)-0.5*ones(size(ij_point,1),1) 1000.5*ones(size(ij_point,1),1)-ij_point(:,1)];
 
 figure(1)
 show(planner)
