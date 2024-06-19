@@ -1,6 +1,4 @@
-classdef rectangular_GBM
-    %UNTITLED Summary of this class goes here
-    %   Detailed explanation goes here
+classdef GBM2_0
     
     properties % Unit: cm
         GBM_pos % [x; y ; psi]
@@ -14,8 +12,18 @@ classdef rectangular_GBM
         v_r
         theta_f
         theta_r
+        v_f_x
+        v_f_y
+        v_r_x
+        v_r_y
         local_motion=[0; 0; 0];
         collision_bool=0;
+
+        mode=[1 -1];
+        wheel1_mode=1;
+        wheel1_changemode=boolean(0);
+        wheel2_mode=1;
+        wheel2_changemode=boolean(0);
 
         v_f_max=100; %500 cm/s
         v_r_max=100;
@@ -30,21 +38,39 @@ classdef rectangular_GBM
     end
     
     methods
-        function obj = rectangular_GBM(GBM_pos,D,W,L,color,initial_state)
+        function obj = GBM2_0(GBM_pos,D,W,L,color,initial_state)
             % parameters setting
             switch nargin
                 case 6
                     obj.v_f=initial_state(1);
-                    obj.v_r=initial_state(3);
                     obj.theta_f=initial_state(2);
+                    if obj.v_f<0
+                        obj.wheel1_mode=obj.mode(2);
+                    else
+                        obj.wheel1_mode=obj.mode(1);
+                    end
+                    obj.v_r=initial_state(3);
                     obj.theta_r=initial_state(4);
+                    if obj.v_r<0
+                        obj.wheel2_mode=obj.mode(2);
+                    else
+                        obj.wheel2_mode=obj.mode(1);
+                    end
+                    obj.v_f_x=obj.v_f*cos(obj.theta_f);
+                    obj.v_f_y=obj.v_f*sin(obj.theta_f);
+                    obj.v_r_x=obj.v_r*cos(obj.theta_r);
+                    obj.v_r_y=obj.v_r*sin(obj.theta_r);
                     H_for=[1/2 0 1/2 0; 0 1/2 0 1/2; 0 1/L 0 -1/L];
-                    obj.local_motion=H_for*initial_state;
+                    obj.local_motion=H_for*[obj.v_f_x; obj.v_f_y; obj.v_r_x; obj.v_r_y];
                 otherwise
                     obj.v_f=0;
                     obj.v_r=0;
                     obj.theta_f=0;
                     obj.theta_r=0;
+                    obj.v_f_x=obj.v_f*cos(obj.theta_f);
+                    obj.v_f_y=obj.v_f*sin(obj.theta_f);
+                    obj.v_r_x=obj.v_r*cos(obj.theta_r);
+                    obj.v_r_y=obj.v_r*sin(obj.theta_r);
             end
                     
             obj.GBM_pos=GBM_pos;
@@ -72,8 +98,8 @@ classdef rectangular_GBM
             obj.wheel_fig2=hgtransform;
             set(obj.wheel_fig2,'Parent',obj.GBM_fig)
             patch('Faces',[1 2 3 4],'Vertices',wheel_rec,'Facecolor',[0.1 0.1 0],'Parent',obj.wheel_fig2);
-            obj.wheel_fig1.Matrix=makehgtform("translate",[obj.L/2; 0; 0]);
-            obj.wheel_fig2.Matrix=makehgtform("translate",[-obj.L/2; 0; 0]);
+            obj.wheel_fig1.Matrix=makehgtform("translate",[obj.L/2; 0; 0])*makehgtform("zrotate",obj.theta_f);
+            obj.wheel_fig2.Matrix=makehgtform("translate",[-obj.L/2; 0; 0])*makehgtform("zrotate",obj.theta_r);
         end
         
         function obj = move_GBM(obj,new_pos,wheel_pos)
@@ -93,10 +119,6 @@ classdef rectangular_GBM
             obj.wheel_fig2.Matrix=makehgtform("translate",[-obj.L/2; 0; 0])*makehgtform("zrotate",wheel_pos(2));
             fig_change=makehgtform("translate",[new_pos(1:2); 0])*makehgtform("zrotate",new_pos(3));
             set(obj.GBM_fig,'Matrix',fig_change)
-            % hold on 
-            % scatter(new_pos(1),new_pos(2),'.')
-            % pause(0.005)
-            hold off
         end
 
         function draw_collision_pos(obj)
@@ -108,16 +130,31 @@ classdef rectangular_GBM
             end
         end
 
-        function [vtheta_cmd,xy_cmd]=inverse_kinematics(obj,local_motion)
+        function [vtheta_cmd,xy_cmd,wheel1]=inverse_kinematics(obj,local_motion)
             % local_motion=>[v_x; v_y; omega]
             % vtheta_cmd=>[v_f; theta_f; v_r; theta_r]
             vtheta_cmd=zeros(4,1);
             H_ink=[1 0 0; 0 1 obj.L/2; 1 0 0; 0 1 -obj.L/2];
             xy_cmd=H_ink*local_motion;
+            if dot([xy_cmd(1); xy_cmd(2)],[obj.v_f_x; obj.v_f_y])<0
+                
+            end
             vtheta_cmd(1)=(xy_cmd(1)^2+xy_cmd(2)^2)^0.5;
             vtheta_cmd(2)=atan2(xy_cmd(2),xy_cmd(1));
             vtheta_cmd(3)=(xy_cmd(3)^2+xy_cmd(4)^2)^0.5;
             vtheta_cmd(4)=atan2(xy_cmd(4),xy_cmd(3));
+        end
+
+        function mode_change=detect_mode_change(obj,xy_cmd)
+            mode_change=[0 0];
+            v1=[obj.v_f_x; obj.v_f_y; 0]/(obj.v_f_x^2+obj.v_f_y^2)^0.5;
+            v2=[obj.v_r_x; obj.v_r_y; 0]/(obj.v_r_x^2+obj.v_r_y^2)^0.5;
+            u1=[xy_cmd(1); xy_cmd(2); 0]/(xy_cmd(1)^2+xy_cmd(2)^2)^0.5;
+            u2=[xy_cmd(3); xy_cmd(4); 0]/(xy_cmd(3)^2+xy_cmd(4)^2)^0.5;
+            if dot(v1,u1)<0
+                
+            end
+
         end
 
         function global_motion=robot_v2globalv(obj,local_motion)
@@ -132,15 +169,11 @@ classdef rectangular_GBM
 
         function exceed_bool=check_kinematic_constraints(obj,actuators_cmd)
             exceed_bool=0;
-            if abs(actuators_cmd(2)-obj.theta_f)>obj.delta_theta_f_max || abs(actuators_cmd(4)-obj.theta_r)>obj.delta_theta_r_max
-                if obj.v_f>10 || obj.v_r>10
-                    exceed_bool=1;
-                else
-                    exceed_bool=2;
-                end
-            elseif actuators_cmd(1)>obj.v_f_max || actuators_cmd(3)>obj.v_r_max
+            if actuators_cmd(1)>obj.v_f_max || actuators_cmd(3)>obj.v_r_max
                 exceed_bool=1;
             elseif abs(actuators_cmd(1)-obj.v_f)>obj.delta_v_f_max || abs(actuators_cmd(3)-obj.v_r)>obj.delta_v_r_max
+                exceed_bool=1;
+            elseif abs(actuators_cmd(2)-obj.theta_f)>obj.delta_theta_f_max || abs(actuators_cmd(4)-obj.theta_r)>obj.delta_theta_r_max
                 exceed_bool=1;
             end
 %             xy_cmd=[act_cmd(1)*cos(act_cmd(2)); act_cmd(1)*sin(act_cmd(2)); act_cmd(3)*cos(act_cmd(4)); act_cmd(3)*sin(act_cmd(4))];
@@ -209,27 +242,11 @@ classdef rectangular_GBM
             exceed_bool=obj.check_kinematic_constraints(vtheta_cmd);
             if exceed_bool==1
                 [xy_act,vtheta_act]=obj.find_optimized_velocity(xy_cmd);
-            elseif exceed_bool==2
-                if obj.v_f>obj.delta_v_f_max || obj.v_r>obj.delta_v_r_max
-                    vtheta_act=[obj.v_f-obj.delta_v_f_max; obj.theta_f; obj.v_r-obj.delta_v_r_max; obj.theta_r];
-                else
-                    if vtheta_cmd(2)>obj.theta_f
-                        front_angle=obj.theta_f+obj.delta_theta_f_max;
-                    else
-                        front_angle=obj.theta_f-obj.delta_theta_f_max;
-                    end
-                    if vtheta_cmd(4)>obj.theta_r
-                        rear_angle=obj.theta_r+obj.delta_theta_r_max;
-                    else
-                        rear_angle=obj.theta_r-obj.delta_theta_r_max;
-                    end
-                    vtheta_act=[0; front_angle; 0; rear_angle];
-                end
-                xy_act(1)=vtheta_act(1)*cos(vtheta_act(2));
-                xy_act(2)=vtheta_act(1)*sin(vtheta_act(2));
-                xy_act(3)=vtheta_act(3)*cos(vtheta_act(4));
-                xy_act(4)=vtheta_act(3)*sin(vtheta_act(4));
             end
+            obj.v_f_x=xy_act(1);
+            obj.v_f_y=xy_act(2);
+            obj.v_r_x=xy_act(3);
+            obj.v_r_y=xy_act(4);
             obj.v_f=vtheta_act(1);
             obj.theta_f=vtheta_act(2);
             obj.v_r=vtheta_act(3);
@@ -253,4 +270,3 @@ classdef rectangular_GBM
         end
     end
 end
-

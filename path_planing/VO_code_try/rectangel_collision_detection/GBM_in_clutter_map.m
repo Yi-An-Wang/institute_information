@@ -1,3 +1,6 @@
+close all
+clear all
+clc
 plan_map=mapClutter(17,{'Box','Plus','Circle'},'MapSize',[1000 1000],'MapResolution',1);
 mat=occupancyMatrix(plan_map);
 map=binaryOccupancyMap(mat,1);
@@ -73,7 +76,7 @@ while ii<max_steps
     else
         sum_error(ii)=sum_error(ii-1)+angular_error(ii)*time_step;
     end
-    kp=0.0;
+    kp=0.1;
     kd=0.0;
     ki=0.0;
     angular_cmd=kp*angular_error(ii)+kd*error_diff(ii)+ki*sum_error(ii);
@@ -93,7 +96,6 @@ while ii<max_steps
     if rem(ii,40)==0
         hold on
         scatter(test_robot.center_position(1),test_robot.center_position(2),'g.')
-        hold off
     end
 
     % detect goal
@@ -104,6 +106,7 @@ while ii<max_steps
         end
     end
 end
+hold off
 
 %% romove zero elements
 t_max=max_steps*time_step;
@@ -122,3 +125,43 @@ for ii=1:max_steps
         break
     end
 end
+
+%% plot data
+t=time_step:time_step:t_max;
+figure(3)
+h1=plot(t,robot_V_cmd(1,:),'m',t,robot_V_cmd(2,:),'c',t,robot_V_cmd(3,:),'k');
+set(h1,'LineStyle','-.','LineWidth',2);
+hold on
+h2=plot(t,robot1_state(1,:),'r',t,robot1_state(2,:),'b',t,robot1_state(3,:),'g');
+set(h2,'LineStyle','-','LineWidth',1);
+hold off
+legend('cmd V_x','cmd V_y','cmd w','act _V_x','act V_y','act w')
+title("robot1 V vector")
+
+figure(4)
+hold on
+g1=plot(t,v_theta_cmd(1,:),'Color',"#77AC30","LineStyle","-.","LineWidth",2);
+g2=plot(t,v_theta_cmd(3,:),"Color","#7E2F8E","LineStyle","-.","LineWidth",2);
+g3=plot(t,v_theta_act(1,:),"Color","#00FF00","LineStyle",'-','LineWidth',1);
+g4=plot(t,v_theta_act(3,:),"Color","#FF00FF","LineStyle",'-','LineWidth',1);
+hold off
+legend('cmd v_f','cmd v_r','act v_f','act v_r')
+title("robot1 wheel speeds")
+
+figure(5)
+hold on
+g5=plot(t,v_theta_cmd(2,:),'Color',"#00FFFF","LineStyle","-.","LineWidth",2);
+g6=plot(t,v_theta_cmd(4,:),"Color","#D95319","LineStyle","-.","LineWidth",2);
+g7=plot(t,v_theta_act(2,:),"Color","#0000FF","LineStyle",'-','LineWidth',1);
+g8=plot(t,v_theta_act(4,:),"Color","#FF0000","LineStyle",'-','LineWidth',1);
+hold off
+legend({'cmd $\theta_f$','cmd $\theta_r$','act $\theta_f$','act $\theta_r$'},"Interpreter","latex")
+title("robot1 wheel steering")
+
+figure(6)
+grid on
+%　plot(t,v_theta_cmd(3,:),"Color",'g','LineStyle','-.','LineWidth',2)
+plot(t,angular_error,"Color",'b','LineStyle','-','LineWidth',1)
+% legend('cmd','error')
+title("control out/in")
+
