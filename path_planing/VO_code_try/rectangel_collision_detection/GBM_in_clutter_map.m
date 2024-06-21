@@ -76,7 +76,7 @@ while ii<max_steps
     else
         sum_error(ii)=sum_error(ii-1)+angular_error(ii)*time_step;
     end
-    kp=0.1;
+    kp=0.5;
     kd=0.0;
     ki=0.0;
     angular_cmd=kp*angular_error(ii)+kd*error_diff(ii)+ki*sum_error(ii);
