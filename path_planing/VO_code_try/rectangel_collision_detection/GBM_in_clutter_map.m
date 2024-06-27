@@ -45,6 +45,8 @@ max_robot_speed=30; % unit: cm
 time_step=0.05;
 max_steps=6000;
 robot_V_cmd=zeros(3,max_steps);
+% video section
+frames=cell(max_steps,1);
 
 v_theta_cmd=zeros(4,max_steps);
 xy_cmd=zeros(4,max_steps);
@@ -105,6 +107,7 @@ while ii<max_steps
             break
         end
     end
+    frames{ii}=getframe(gcf);
 end
 hold off
 
@@ -121,6 +124,8 @@ for ii=1:max_steps
         error_diff(:,ii:end)=[];
         sum_error(:,ii:end)=[];
         robot1_state(:,ii:end)=[];
+        frames(ii-1:end)=[];
+        steps=ii-2;
         t_max=(ii-1)*time_step;
         break
     end
@@ -165,3 +170,9 @@ plot(t,angular_error,"Color",'b','LineStyle','-','LineWidth',1)
 % legend('cmd','error')
 title("control out/in")
 
+video=VideoWriter('GBM_in_clutter_map.avi');
+open(video)
+for ii=1:steps
+    writeVideo(video,frames{ii});
+end
+close(video)

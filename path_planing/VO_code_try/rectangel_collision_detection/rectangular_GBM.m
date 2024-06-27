@@ -19,8 +19,8 @@ classdef rectangular_GBM
 
         v_f_max=100; %500 cm/s
         v_r_max=100;
-        delta_v_f_max=20;
-        delta_v_r_max=20;
+        delta_v_f_max=10;
+        delta_v_r_max=10;
         delta_theta_f_max=0.05;
         delta_theta_r_max=0.05;
 
