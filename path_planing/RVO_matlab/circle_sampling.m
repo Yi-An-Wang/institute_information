@@ -7,7 +7,7 @@ figure(1)
 
 subplot(1,2,2)
 [circlex circley] = rand_circ(Samples,0,0,size);
-plot(circlex,circley,'o');
+plot(circlex,circley,'.');
 title('circle distributed sampling')
 axis([-(Area_X+1) (Area_X+1) -(Area_X+1) (Area_X+1)])
 
@@ -16,6 +16,6 @@ theta = rand(1,Samples)*2*pi;
 r = size*rand(1,Samples);
 x = (r).*cos(theta);
 y = (r).*sin(theta);
-plot(x,y,'o');
+plot(x,y,'.');
 title('circle sampling')
 axis([-(Area_X+1) (Area_X+1) -(Area_X+1) (Area_X+1)])
