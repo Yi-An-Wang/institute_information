@@ -27,6 +27,7 @@ classdef rectangular_GBM
         GBM_fig
         wheel_fig1
         wheel_fig2
+        trajectory
     end
     
     methods
@@ -74,6 +75,7 @@ classdef rectangular_GBM
             patch('Faces',[1 2 3 4],'Vertices',wheel_rec,'Facecolor',[0.1 0.1 0],'Parent',obj.wheel_fig2);
             obj.wheel_fig1.Matrix=makehgtform("translate",[obj.L/2; 0; 0]);
             obj.wheel_fig2.Matrix=makehgtform("translate",[-obj.L/2; 0; 0]);
+            obj.trajectory=animatedline('Color',color*0.65,'LineWidth',0.5);
         end
         
         function obj = move_GBM(obj,new_pos,wheel_pos)
@@ -93,8 +95,9 @@ classdef rectangular_GBM
             obj.wheel_fig2.Matrix=makehgtform("translate",[-obj.L/2; 0; 0])*makehgtform("zrotate",wheel_pos(2));
             fig_change=makehgtform("translate",[new_pos(1:2); 0])*makehgtform("zrotate",new_pos(3));
             set(obj.GBM_fig,'Matrix',fig_change)
-            % hold on 
-            % scatter(new_pos(1),new_pos(2),'.')
+            hold on 
+            addpoints(obj.trajectory,obj.center_position(1),obj.center_position(2));
+            drawnow
             % pause(0.005)
             hold off
         end

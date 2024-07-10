@@ -95,10 +95,10 @@ while ii<max_steps
 
     % visualize
     pause(0.01)
-    if rem(ii,40)==0
-        hold on
-        scatter(test_robot.center_position(1),test_robot.center_position(2),'g.')
-    end
+    % if rem(ii,40)==0
+    %     hold on
+    %     scatter(test_robot.center_position(1),test_robot.center_position(2),'g.')
+    % end
 
     % detect goal
     if ((test_robot.center_position(1)-way_points(1,goal_order))^2+(test_robot.center_position(2)-way_points(2,goal_order))^2)<=1
