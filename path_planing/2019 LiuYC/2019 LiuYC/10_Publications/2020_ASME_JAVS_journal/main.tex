@@ -1,0 +1,152 @@
+\documentclass[a4paper,12pt]{article}
+
+% packages
+\usepackage{amsmath, amsfonts, bm, cite}
+\usepackage[pdftex]{graphicx}
+\usepackage{color}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{makeidx, chngpage}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{authblk}
+\usepackage[margin = 2.5cm]{geometry}
+\usepackage{indentfirst}
+\usepackage{url}
+\usepackage{enumerate}
+\usepackage{calc}  
+\usepackage{enumitem} 
+\usepackage{hyperref}
+\usepackage{tabularx,ragged2e,booktabs,caption}
+\usepackage{verbatim}
+\usepackage{natbib}      % Allows you to use BibTeX
+\usepackage[printonlyused]{acronym} % For the List of Abbreviations. Read acronym.pdf on ctan.tug.org
+\usepackage{subfig}   % this replaces the older "subfigure", don't use both at the same time
+% \usepackage{subcaption}
+\newcommand*{\resetfigpath}[1]{
+    \graphicspath{{#1/figs/}}
+}
+% line spacing
+\usepackage{array}
+\newenvironment{conditions}
+  {\par\vspace{\abovedisplayskip}\noindent\begin{tabular}{>{$}l<{$} @{${}={}$} l}}
+  {\end{tabular}\par\vspace{\belowdisplayskip}}
+\usepackage{optidef}
+\usepackage{setspace}
+% for list of symbols
+\usepackage[symbols,nogroupskip,sort=none]{glossaries-extra}
+
+\glsxtrnewsymbol[description={adjustment term for the TFA distribution}]{20}{\ensuremath{A}}
+\glsxtrnewsymbol[description={acceleration of the $i$\textsuperscript{th} vehicle}]{6}{\ensuremath{a_i}}
+\glsxtrnewsymbol[description={safe margin coefficient}]{13}{\ensuremath{{C1}_{R_{\min}}}}
+\glsxtrnewsymbol[description={safe margin constant}]{14}{\ensuremath{{C2}_{R_{\min}}}}
+\glsxtrnewsymbol[description={deceleration coefficient}]{15}{\ensuremath{{C1}_{\mathrm{adec}}}}
+\glsxtrnewsymbol[description={deceleration constant}]{16}{\ensuremath{{C2}_{\mathrm{adec}}}}
+\glsxtrnewsymbol[description={displacement of the $i$\textsuperscript{th} vehicle}]{4}{\ensuremath{d_{\mathrm{node},i}}}
+\glsxtrnewsymbol[description={minimum TTC}]{19}{\ensuremath{\min \mathrm{TTC}}}
+\glsxtrnewsymbol[description={the node, point of intersection}]{1}{\ensuremath{\oplus}}
+\glsxtrnewsymbol[description={probability of yielding}]{17}{\ensuremath{P_{\mathrm{yield}}}}
+\glsxtrnewsymbol[description={probability of yielding}]{111}{POY}
+\glsxtrnewsymbol[description={CDF of the TFA distribution}]{18}{\ensuremath{\Phi_{\mu, \sigma^2}}}
+\glsxtrnewsymbol[description={classification accuracy rate}]{21}{$R_{\mathrm{CA}}$}
+\glsxtrnewsymbol[description={braking distance}]{10}{\ensuremath{R_i}}
+\glsxtrnewsymbol[description={safe margin}]{12}{\ensuremath{R_{\min}}}
+\glsxtrnewsymbol[description={states of the $i$\textsuperscript{th} vehicle}]{3}{\ensuremath{\mathbf{S}_i}}
+\glsxtrnewsymbol[description={reaction time}]{11}{\ensuremath{\tau}}
+\glsxtrnewsymbol[description={time to collision}]{7}{TTC}
+\glsxtrnewsymbol[description={time for action}]{8}{TFA}
+\glsxtrnewsymbol[description={estimated mean value of the TFA distribution}]{9}{$\mathrm{TFA}_{\mathrm{est}}$}
+\glsxtrnewsymbol[description={velocity of the $i$\textsuperscript{th} vehicle}]{5}{\ensuremath{v_i}}
+%\glsxtrnewsymbol[description={time}]{2}{\ensuremath{t}}
+
+
+\begin{document}
+
+\begin{center}
+~\\~\\
+{\Large {\sc Probabilistic Modeling of Driver Behaviors at Urban Crossroad Interactions }}\\~\\
+
+\singlespacing
+Yuan-Cheng Liu, Kuei-Yuan Chan\footnote{Corresponding Author,  chanky@ntu.edu.tw, Fax:+886-2-2363-1755}, \\
+Department of Mechanical Engineering, \\
+National Taiwan University, Taipei, Taiwan
+\end{center}
+
+% \listofabbreviations
+%===== ABSTRACT ======%
+\input{Abstract/Abstract}
+\label{Abstract}
+%===== ======== ======%
+
+%\tableofcontents
+%\listoffigures
+
+% List of Symbols
+\newpage
+\printunsrtglossary[type=symbols,style=long]
+
+\newpage
+
+\section{Introduction}
+\label{sec:Intro}
+\input{Intro/Intro}
+
+\newpage
+
+\section{Motion Prediction Models}
+\label{sec:Lit}
+\input{Lit/Lit}
+
+\newpage
+
+\section{Methodology}
+\label{sec:Method}
+\input{Methodology/Methodology}
+
+\section{Extended Applications}
+\label{sec:Extended Applications}
+\input{Cases/Cases}
+
+\section{Concluding Remarks}
+\label{sec:Conclusion}
+\input{Conclusion/Conclusion}
+
+\begin{acronym}
+\acro{TTC}{Time to Collision}
+\acro{TFA}{Time for Action}
+\acro{Q-Q Plots}{Quantile Quantile Plots}
+\acro{POY}{Probability of Yielding}
+\acro{CARate}{Classification Accuracy Rate}
+\acro{SA}{Simulated Annealing}
+\end{acronym}
+
+
+%===== LISTS ======%
+% \section*{List of Acronym}
+% \begin{description}
+% \item[CDF] cumulative distribution function
+% \item[DES] distributed energy storage
+% \end{description}
+
+% \section*{List of Symbols}
+% \begin{description}[leftmargin=!,labelwidth=\widthof{\bfseries The longest label}]
+% \item[$e(t)$] power capacity of DES at time $t$
+% \item[$e_\mathrm{max}$] upper limits of DES
+% \end{description}
+
+% \section*{Note}
+% \begin{description}
+% \item Lowercase letters such as $e(t)$ and $l(t)$ indicate deterministic variables or parameters
+% \item Uppercase letters such as $E(t)$ and $L(t)$ indicate uncertainty variables or parameters defined by probability distributions
+% \end{description}
+% \newpage
+%===== ===== ======%
+
+
+
+\bibliography{References}
+\bibliographystyle{unsrt}
+\end{document}
+
+
+

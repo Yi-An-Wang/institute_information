@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<launch>
+    <arg name="single" />
+    <arg name="joy_maxVel" />
+    <arg name="joy_accele" />
+
+<!-- joy teleop -->
+<!--============-->
+
+<!-- Prius0 -->
+    <node pkg="prius_control" type="prius0_teleop_joy_gear.py" name="prius0_teleop_joy">
+        <param name="robot_ns" value="prius0" />
+        <param name="max_velocity" value="$(arg joy_maxVel)" />
+        <param name="acceleration" value="$(arg joy_accele)" />
+    </node>
+
+    <node pkg="joy" type="joy_node" name="prius0_joystick" >
+        <param name="dev" type="string" value="/dev/input/js0" />
+        <remap from="/joy" to="/prius0/joy" />
+	    <param name="deadzone" value="0.0" />
+	    <param name="autorepeat_rate" value="100" />
+    </node>
+
+
+<!-- Prius1 -->
+    <node pkg="prius_control" type="prius1_teleop_joy_gear.py" name="prius1_teleop_joy" unless="$(arg single)">
+        <param name="robot_ns" value="prius1" />
+        <param name="max_velocity" value="$(arg joy_maxVel)" />
+        <param name="acceleration" value="$(arg joy_accele)" />
+    </node>
+
+    <node pkg="joy" type="joy_node" name="prius1_joystick" unless="$(arg single)">
+        <param name="dev" type="string" value="/dev/input/js1" />
+        <remap from="/joy" to="/prius1/joy" />
+	    <param name="deadzone" value="0.0" />
+	    <param name="autorepeat_rate" value="100" />
+    </node>
+
+</launch>

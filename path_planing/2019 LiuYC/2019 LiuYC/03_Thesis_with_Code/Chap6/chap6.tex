@@ -1,0 +1,25 @@
+\resetfigpath{Chap6}
+
+%%%{INTRODUCTION to this CHAPTER}%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%               SECTION SECTION SECTION               %%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusions}
+\label{sec:conclusion}
+In this thesis, the behaviors of human drivers were modeled in a probabilistic way based on the cognitive information. In Chapter~\ref{chap:DriverModel}, the fundamental concepts used in the proposed method were introduced. These concepts include: 1) the definition of TTC with its role to human drivers in cognitive science and the simplified crossroad model; 2) the presupposition of TTA distribution being normally distributed and the verification of it. Then the proposed POY was finally formulated and the required parameters in the model were also identified. In the last section of the chapter, the experiments were conducted in the virtual environment for the purpose of validation, and the results suggested the prediction accuracy rate being comparable to the state of the art method with more applicability.
+
+Following the core model, the characteristic parameters identification was proposed using optimization method in Chapter~\ref{chap:ModelParam}. First the objective function was formulated with the area under the corresponding CARate curve using a set of parameter. Constraints were also listed according to the boundaries set in the simulated environment. Despite the set of parameters identified was not accurate enough, the proposed procedure is a preliminary method for characteristic parameters recognition.
+
+Possible applications using the proposed model were explored in Chapter~\ref{chap:App}. The proposed model was applied at the crossroad in urban area, where no traffic signal was at the scene. The outcomes showed almost identical POY curves as in the simulated environments, providing evidence for the usefulness of the proposed model in real world. Then, a procedure was also developed to help autonomous vehicles handling the complex situation. Finally in this chapter, after the summary of this thesis, the possible extensions and directions for the proposed model and applications will be discussed.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%               SECTION SECTION SECTION               %%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Future Works}
+\label{sec:futureWorks}
+
+For the simulated experiments in the virtual world, some enhancements could be done to generate better results. Firstly, the database for the average parameters in the simulated environment could be extended to find a closer average parameters, so the performance could be improved when estimating the intention of an unknown driver. Secondly, using joystick to imitate the throttle and the brake of a real vehicle makes confusion for a licensed driver. The angles of views from the simulated environment are also quite different from that in a real vehicle. Despite these defects would not affect the prediction using the proposed model because the parameters used in the model are also gathered in the simulated environment, a more realistic virtual crossroad can make the data gathered in virtual world more applicable in the real world. 
+In Chapter~\ref{chap:ModelParam}, some improvements are required for the characteristic parameters identification. Adding penalty functions to the optimization problem could be a possible direction to make modification since the over sensitive results consistent in the overrated POY values. When the parameter identification become reliable and robust, the average parameters of the urban crossroads can then be identified. The average parameters of the area can not only gives us the average driving styles of the area, but can also be applied to autonomous vehicles around that area to let them make better judgements of the possible behaviors of the surrounding vehicles.
