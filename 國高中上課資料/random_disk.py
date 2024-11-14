@@ -33,7 +33,7 @@ def move_arrow(arrow: FancyArrow, state: list[float], dt) -> list[float]:
     arrow.set_data(dx=new_state[0], dy=new_state[1])
     return new_state
 
-def pointout(state: list[float], ax):
+def pointout(state: list[float], Ppoint: Circle):
     pose = np.array([[state[0]], [state[1]]])
     nothing_angle = np.linspace(0, 2*np.pi, 43)
     angles = (nothing_angle[0:42] + nothing_angle[1:43])/2
@@ -41,10 +41,12 @@ def pointout(state: list[float], ax):
     x_list = r * np.cos(angles)
     y_list = r * np.sin(angles)
     points = np.vstack((x_list, y_list))
-    point_center = np.array([[0], [0]])
+    point_center = points[:,0:1]
     for ii in range(42):
-        if np.linalg.norm(pose - points[:,ii:ii+1]) < np.linalg.norm(point_center - points[:,ii:ii+1]):
-            pass
+        if np.linalg.norm(pose - point_center) > np.linalg.norm(pose - points[:,ii:ii+1]):
+            point_center = points[:,ii:ii+1]
+    Ppoint.set_center(point_center.flatten())
+    print(point_center)
 
 def main():
     fig = plt.figure()
@@ -56,16 +58,20 @@ def main():
     state = initial_state(40)
     arrow = FancyArrow(0,0, state[0], state[1], width=2, facecolor="white")
     ax.add_patch(arrow)
+    cent = Circle([0,0], 6, facecolor="red")
+    ax.add_patch(cent)
+    bingo = Circle([0, 0], 4, facecolor="red", alpha=0.4)
+    ax.add_patch(bingo)
     plt.pause(1)
     dt = 0.01
+    plt.ion()
     while(state[2] >= 0):
         state = move_arrow(arrow, state, dt)
         plt.pause(dt)
-    n = np.array([state[0:2]]).T
-    final_pose = n + 16 * n/np.linalg.norm(n)
-    pointout(state, ax)
-    # bingo = Circle(final_pose.flatten(), 6, alpha=0.4)
-    # ax.add_patch(bingo)
+
+    pointout(state, bingo)
+
+    plt.ioff()
     plt.show()
 
 if __name__ == "__main__":
