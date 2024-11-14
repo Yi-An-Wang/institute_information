@@ -21,7 +21,7 @@ def draw_disk(ax) -> None:
     for ii in range(choices):
         sectors[ii] = Wedge([0,0],r, 360/choices*ii, 360/choices*(ii+1), width=40, facecolor=colors[int(ii%7)])
         ax.add_patch(sectors[ii])
-        ax.text((r+6)*math.cos(2*math.pi/choices*(ii+0.5))-2,(r+6)*math.sin(2*math.pi/choices*(ii+0.5))-2,f"{ii+1}")
+        ax.text((r+6)*math.cos(2*math.pi/choices*(ii+0.5))-1.5,(r+6)*math.sin(2*math.pi/choices*(ii+0.5))-1.5,f"{ii+1}")
     ax.add_patch(Circle([0,0], 10, facecolor="black"))
 
 def move_arrow(arrow: FancyArrow, state: list[float], dt) -> list[float]:
@@ -32,6 +32,19 @@ def move_arrow(arrow: FancyArrow, state: list[float], dt) -> list[float]:
     new_state = [new_xy[0,0], new_xy[1,0], omega]
     arrow.set_data(dx=new_state[0], dy=new_state[1])
     return new_state
+
+def pointout(state: list[float], ax):
+    pose = np.array([[state[0]], [state[1]]])
+    nothing_angle = np.linspace(0, 2*np.pi, 43)
+    angles = (nothing_angle[0:42] + nothing_angle[1:43])/2
+    r = 56
+    x_list = r * np.cos(angles)
+    y_list = r * np.sin(angles)
+    points = np.vstack((x_list, y_list))
+    point_center = np.array([[0], [0]])
+    for ii in range(42):
+        if np.linalg.norm(pose - points[:,ii:ii+1]) < np.linalg.norm(point_center - points[:,ii:ii+1]):
+            pass
 
 def main():
     fig = plt.figure()
@@ -48,6 +61,11 @@ def main():
     while(state[2] >= 0):
         state = move_arrow(arrow, state, dt)
         plt.pause(dt)
+    n = np.array([state[0:2]]).T
+    final_pose = n + 16 * n/np.linalg.norm(n)
+    pointout(state, ax)
+    # bingo = Circle(final_pose.flatten(), 6, alpha=0.4)
+    # ax.add_patch(bingo)
     plt.show()
 
 if __name__ == "__main__":
