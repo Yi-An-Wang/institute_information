@@ -1,10 +1,13 @@
 rng('default');
 map1=mapClutter;
+map2 = mapMaze;
 
 %% Astar
-planner=plannerAStarGrid(map1);
-start=[50 240];
-goal=[240 50];
+planner=plannerAStarGrid(map2);
+start=[240 10];
+goal=[10 140];
 way_point=plan(planner,start,goal);
-figure('Position',[10 10 1200 1000])
+figure(1)
 show(planner)
+figure(2)
+show(map2)

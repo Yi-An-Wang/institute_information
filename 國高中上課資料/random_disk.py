@@ -21,7 +21,7 @@ def draw_disk(ax) -> None:
     for ii in range(choices):
         sectors[ii] = Wedge([0,0],r, 360/choices*ii, 360/choices*(ii+1), width=40, facecolor=colors[int(ii%7)])
         ax.add_patch(sectors[ii])
-        ax.text((r+6)*math.cos(2*math.pi/choices*(ii+0.5))-1.5,(r+6)*math.sin(2*math.pi/choices*(ii+0.5))-1.5,f"{ii+1}")
+        ax.text((r+6)*math.cos(2*math.pi/choices*(ii+0.5))-2,(r+6)*math.sin(2*math.pi/choices*(ii+0.5))-1.5,f"{ii+1}")
     ax.add_patch(Circle([0,0], 10, facecolor="black"))
 
 def move_arrow(arrow: FancyArrow, state: list[float], dt) -> list[float]:
