@@ -1,0 +1,1 @@
+This video summarizes the contents of the paper highlighting the high-level algorithm and its simulation on multiple benchmarking scenarios. The simulation considers disk shaped, holonomic agents navigating in a shared workspace.

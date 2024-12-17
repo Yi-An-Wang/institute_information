@@ -1,0 +1,4 @@
+Paper title: V-RVO: Decentralized Multi-Agent Collision Avoidance using Voronoi Diagrams and Reciprocal Velocity Obstacles.Description:This video summarizes the contents of the paper highlighting the high-level algorithm and its simulation on multiple benchmarking scenarios. The simulation considers disk shaped, holonomic agents navigating in a shared workspace.
+Player Information: The video works on any player supporting .mp4 format. It has been tested to work on VLC player 2.2.8 and QuickTime player 10.5 on a system running macOS Big Sur. Contact Information: Senthil Hariharan ArulPh.D. Candidate, ECEUniversity of Maryland, College ParkEmail: senthilhariharana@gmail.com, sarul1@umd.edu
+
+Attachment filename: 1929_VI.mp4 (8656220 Bytes)
